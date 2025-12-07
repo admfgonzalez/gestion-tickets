@@ -79,4 +79,12 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID> {
      * @return A list of tickets.
      */
     List<Ticket> findAllByStatusOrderByAttendedAtDesc(TicketStatus status);
+
+    /**
+     * Finds all tickets created within a given time range.
+     * @param startTime The start of the time range.
+     * @param endTime The end of the time range.
+     * @return A list of tickets.
+     */
+    List<Ticket> findAllByCreatedAtBetweenOrderByCreatedAtAsc(LocalDateTime startTime, LocalDateTime endTime);
 }

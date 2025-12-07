@@ -188,6 +188,51 @@
             background-color: #a0a0a0;
             cursor: not-allowed;
         }
+        .workday-actions {
+            display: flex;
+            align-items: center;
+        }
+        .download-btn {
+            display: inline-block;
+            padding: 5px 12px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            margin-left: 1rem;
+        }
+        .download-btn:hover {
+            background-color: #004494;
+        }
+
+        /* Styles for collapsible panels */
+        h2.collapsible {
+            cursor: pointer;
+            position: relative;
+        }
+        h2.collapsible::after {
+            content: '';
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            border: solid var(--primary-color);
+            border-width: 0 2px 2px 0;
+            display: inline-block;
+            padding: 4px;
+            transform: translateY(-50%) rotate(45deg); /* Down arrow */
+            transition: transform 0.3s;
+        }
+        h2.collapsible.active::after {
+            transform: translateY(-50%) rotate(-135deg); /* Up arrow */
+        }
+        .collapsible-content {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background-color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -195,11 +240,33 @@
     <div class="container">
         <h1>Sistema de Gestión de Tickets</h1>
         
-        <div class="grid-container">
-            <!-- Client Section -->
+        <div class="grid-container" style="margin-bottom: 2rem;">
+            <!-- Workday Management -->
             <div class="card">
-                <h2>Portal del Cliente</h2>
-                
+                <h2>Jornada Laboral</h2>
+                <div id="workday-status-panel">
+                    <p>Estado: <span id="workday-status">--</span></p>
+                    <p>Inicio: <span id="workday-start">--</span></p>
+                </div>
+                <div id="workday-controls">
+                    <button id="start-day-btn" style="background-color: var(--success-color);">Iniciar Día</button>
+                    <button id="end-day-btn" style="background-color: var(--danger-color);">Finalizar Día</button>
+                </div>
+            </div>
+            
+            <!-- Workday History -->
+            <div class="card">
+                <h2>Historial de Jornadas</h2>
+                <ul id="workday-history-list" class="queue-list">
+                    <!-- History will be loaded here -->
+                </ul>
+            </div>
+        </div>
+
+        <!-- Client Section -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <h2 class="collapsible">Portal del Cliente</h2>
+            <div class="collapsible-content">
                 <!-- Ticket Creation -->
                 <div id="create-ticket-section">
                     <h3>Crear Nuevo Ticket</h3>
@@ -239,14 +306,16 @@
                     <div id="status-result" style="margin-top: 1rem;"></div>
                 </div>
             </div>
+        </div>
 
-            <!-- Supervisor Section -->
-            <div class="card">
-                <h2>Panel del Supervisor</h2>
+        <!-- Supervisor Section -->
+        <div class="card">
+            <h2 class="collapsible active">Panel del Supervisor</h2>
+            <div class="collapsible-content">
                 <div id="dashboard">
                     <div class="dashboard-grid">
                         <div class="metric-card total">
-                            <h3>Total Hoy</h3>
+                            <h3>Total del Día</h3>
                             <p id="total-tickets">0</p>
                         </div>
                         <div class="metric-card pending">
@@ -281,6 +350,32 @@
     <!-- This script handles form submissions and dashboard updates by making API calls. -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // --- Collapsible Panel Logic ---
+            const collapsibles = document.querySelectorAll('.collapsible');
+            collapsibles.forEach(coll => {
+                // Initialize panels
+                const content = coll.nextElementSibling;
+                if (coll.classList.contains('active')) {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                    content.style.padding = "1.5rem";
+                } else {
+                    content.style.maxHeight = null;
+                    content.style.padding = "0 1.5rem";
+                }
+
+                coll.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    const content = this.nextElementSibling;
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                        content.style.padding = "0 1.5rem";
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                        content.style.padding = "1.5rem";
+                    }
+                });
+            });
+            
             const API_BASE_URL = window.location.origin;
 
             const createTicketForm = document.getElementById('create-ticket-form');
@@ -463,6 +558,75 @@
             // Initial load and periodic refresh
             updateDashboard();
             setInterval(updateDashboard, 5000); // RF-007: Refresh every 5 seconds
+
+            // --- Workday Logic ---
+            const workdayStatusEl = document.getElementById('workday-status');
+            const workdayStartEl = document.getElementById('workday-start');
+            const startDayBtn = document.getElementById('start-day-btn');
+            const endDayBtn = document.getElementById('end-day-btn');
+            const historyList = document.getElementById('workday-history-list');
+
+            async function updateWorkdayStatus() {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/workday/active`);
+                    if (response.ok && response.status !== 204) {
+                        const data = await response.json();
+                        workdayStatusEl.textContent = 'ACTIVA';
+                        workdayStartEl.textContent = new Date(data.startTime).toLocaleString();
+                        startDayBtn.style.display = 'none';
+                        endDayBtn.style.display = 'inline-block';
+                    } else {
+                        workdayStatusEl.textContent = 'NO ACTIVA';
+                        workdayStartEl.textContent = '--';
+                        startDayBtn.style.display = 'inline-block';
+                        endDayBtn.style.display = 'none';
+                    }
+                } catch (error) {
+                    console.error('Failed to get workday status:', error);
+                }
+            }
+
+            async function updateWorkdayHistory() {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/workday/history`);
+                    const data = await response.json();
+                    historyList.innerHTML = data.map(wd => `
+                        <li class="list-item">
+                            <div>
+                                <strong>Inicio:</strong> ${new Date(wd.startTime).toLocaleString()} <br>
+                                <strong>Fin:</strong> ${wd.endTime ? new Date(wd.endTime).toLocaleString() : '---'}
+                            </div>
+                            <div class="workday-actions">
+                                <span class="status ${wd.status === 'ACTIVE' ? 'AVAILABLE' : 'BUSY'}">${wd.status}</span>
+                                <a href="${API_BASE_URL}/api/workday/${wd.id}/report" class="download-btn" title="Descargar Reporte">PDF</a>
+                            </div>
+                        </li>
+                    `).join('');
+                } catch (error) {
+                    console.error('Failed to get workday history:', error);
+                }
+            }
+
+            startDayBtn.addEventListener('click', async () => {
+                if (!confirm('¿Está seguro que desea iniciar una nueva jornada? Se reiniciará el contador de tickets.')) return;
+                await fetch(`${API_BASE_URL}/api/workday/start`, { method: 'POST' });
+                updateWorkdayStatus();
+                updateWorkdayHistory();
+                updateDashboard(); // Refresh main dashboard
+            });
+
+            endDayBtn.addEventListener('click', async () => {
+                if (!confirm('¿Está seguro que desea finalizar la jornada actual?')) return;
+                await fetch(`${API_BASE_URL}/api/workday/end`, { method: 'POST' });
+                updateWorkdayStatus();
+                updateWorkdayHistory();
+                updateDashboard(); // Refresh main dashboard
+            });
+
+            // Initial Load for workday info
+            updateWorkdayStatus();
+            updateWorkdayHistory();
+            setInterval(updateWorkdayHistory, 60000); // Refresh history every minute
         });
     </script>
 </body>

@@ -24,6 +24,9 @@ dependencies {
     // Telegram Bot API
     implementation 'com.github.pengrad:java-telegram-bot-api:7.0.0'
 
+    // PDF Generation
+    implementation 'org.apache.pdfbox:pdfbox:3.0.2'
+
     runtimeOnly 'org.postgresql:postgresql'
 
     // Test dependencies

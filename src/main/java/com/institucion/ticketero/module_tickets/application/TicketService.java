@@ -150,6 +150,10 @@ public class TicketService {
         });
     }
 
+    public void resetTicketCounter() {
+        ticketCounter.set(0);
+    }
+
     /**
      * Closes the currently active ticket for a specific executive.
      * This is a manual action triggered from the supervisor dashboard.
