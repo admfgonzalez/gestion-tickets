@@ -1,0 +1,43 @@
+# Q-Insight: Spring Boot Configuration File.
+# This file contains the main configuration for the application.
+
+server:
+  port: 8080
+
+spring:
+  # Q-Insight: Datasource Configuration.
+  # Configures the connection to the PostgreSQL database.
+  # Values are sourced from environment variables for security and flexibility.
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:ticketero_db}
+    username: ${DB_USER:user}
+    password: ${DB_PASSWORD:password}
+    driver-class-name: org.postgresql.Driver
+
+  # Q-Insight: JPA (Java Persistence API) Configuration.
+  # Manages how JPA interacts with the database.
+  jpa:
+    hibernate:
+      # 'update' is good for development, but 'validate' is safer for production
+      # as Flyway will be managing the schema.
+      ddl-auto: validate
+    show-sql: true # Logs SQL statements, useful for debugging.
+    properties:
+      hibernate:
+        format_sql: true # Pretty-prints SQL logs.
+
+  # Q-Insight: Flyway Configuration.
+  # Manages database schema migrations. It's enabled by default when the dependency is present.
+  flyway:
+    baseline-on-migrate: true # Will create schema history table if it doesn't exist.
+
+# Q-Insight: Telegram Bot Configuration.
+# The token is externalized to environment variables, a security best practice.
+telegram:
+  bot:
+    token: ${TELEGRAM_BOT_TOKEN:YOUR_TELEGRAM_BOT_TOKEN_HERE}
+
+logging:
+  level:
+    root: INFO
+    com.institucion.ticketero: DEBUG # More verbose logging for our application code.

@@ -1,0 +1,42 @@
+# Q-Insight: Docker Compose Configuration for Local Development.
+# This file orchestrates the multi-container setup for the application,
+# including the Spring Boot service and the PostgreSQL database.
+
+services:
+  # Q-Insight: PostgreSQL Database Service.
+  # Defines the database container.
+  db:
+    image: postgres:16
+    container_name: ticketero-db
+    ports:
+      - "5432:5432" # Maps the container's port 5432 to the host's port 5432.
+    environment:
+      # These variables are used by the PostgreSQL image to initialize the database.
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persists database data across container restarts.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Q-Insight: Spring Boot Application Service.
+  # Defines the main application container.
+  app:
+    build: . # Tells Docker Compose to build the image from the Dockerfile in the current directory.
+    container_name: ticketero-app
+    ports:
+      - "8080:8080" # Maps the app's port 8080 to the host.
+    env_file:
+      - .env # Loads environment variables from the .env file.
+    depends_on:
+      db:
+        condition: service_healthy # Ensures the app only starts after the database is ready.
+
+volumes:
+  # Q-Insight: Docker Volume for Data Persistence.
+  # Defines a named volume to store the PostgreSQL data.
+  postgres_data:
