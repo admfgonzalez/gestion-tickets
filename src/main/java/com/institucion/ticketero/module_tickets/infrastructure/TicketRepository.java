@@ -72,4 +72,11 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID> {
     List<Ticket> findTicketsAtPositionInQueue(int position);
 
     List<Ticket> findByExecutiveIdAndStatus(UUID executiveId, TicketStatus status);
+
+    /**
+     * Finds all tickets with a given status, ordered by when they were attended.
+     * @param status The status to filter by.
+     * @return A list of tickets.
+     */
+    List<Ticket> findAllByStatusOrderByAttendedAtDesc(TicketStatus status);
 }

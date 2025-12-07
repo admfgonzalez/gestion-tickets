@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión de Tickets</title>
+    <!-- Q-Insight: Embedded CSS for Single-File Frontend -->
+    <!-- This section contains all the styling for the page. -->
+    <style>
+        :root {
+            --primary-color: #0056b3;
+            --secondary-color: #f8f9fa;
+            --text-color: #333;
+            --border-color: #dee2e6;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --danger-color: #dc3545;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background-color: #fff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: .5rem;
+            font-weight: bold;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: .75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: .75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #004494;
+        }
+        
+        #dashboard {
+            margin-top: 2rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .metric-card {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 8px;
+            color: white;
+        }
+        .metric-card.total { background-color: var(--info-color); }
+        .metric-card.pending { background-color: var(--warning-color); }
+        .metric-card.attending { background-color: var(--success-color); }
+        .metric-card.closed { background-color: var(--dark-color); }
+
+        .metric-card h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        .metric-card p {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        .details-grid {
+            margin-top: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .queue-list, .executive-list {
+            padding: 0;
+            list-style: none;
+        }
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .list-item .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: white;
+        }
+        .status.AVAILABLE { background-color: var(--success-color); }
+        .status.BUSY { background-color: var(--danger-color); }
+
+        /* New styles for executive controls */
+        .executive-item {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .executive-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .executive-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+        .attention-types-control {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .attention-types-control label {
+            font-weight: normal;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+        .end-session-btn:disabled {
+            background-color: #a0a0a0;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Sistema de Gestión de Tickets</h1>
+        
+        <div class="grid-container">
+            <!-- Client Section -->
+            <div class="card">
+                <h2>Portal del Cliente</h2>
+                
+                <!-- Ticket Creation -->
+                <div id="create-ticket-section">
+                    <h3>Crear Nuevo Ticket</h3>
+                    <form id="create-ticket-form">
+                        <div class="form-group">
+                            <label for="customerId">RUT / ID</label>
+                            <input type="text" id="customerId" placeholder="Ej: 12345678-9" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="telegramChatId">ID de Chat de Telegram (Opcional)</label>
+                            <input type="text" id="telegramChatId" placeholder="Para recibir notificaciones">
+                        </div>
+                        <div class="form-group">
+                            <label for="attentionType">Tipo de Atención</label>
+                            <select id="attentionType" required>
+                                <option value="CAJA">Caja</option>
+                                <option value="PERSONAL_BANKER">Personal Banker</option>
+                                <option value="EMPRESAS">Empresas</option>
+                                <option value="GERENCIA">Gerencia</option>
+                            </select>
+                        </div>
+                        <button type="submit">Obtener Ticket</button>
+                    </form>
+                    <div id="create-result" style="margin-top: 1rem;"></div>
+                </div>
+
+                <!-- Ticket Status Check -->
+                <div id="check-status-section" style="margin-top: 2rem;">
+                    <h3>Consultar Estado de Ticket</h3>
+                    <form id="check-status-form">
+                        <div class="form-group">
+                            <label for="ticketNumber">Número de Ticket</label>
+                            <input type="text" id="ticketNumber" placeholder="Ej: PB-101" required>
+                        </div>
+                        <button type="submit">Consultar</button>
+                    </form>
+                    <div id="status-result" style="margin-top: 1rem;"></div>
+                </div>
+            </div>
+
+            <!-- Supervisor Section -->
+            <div class="card">
+                <h2>Panel del Supervisor</h2>
+                <div id="dashboard">
+                    <div class="dashboard-grid">
+                        <div class="metric-card total">
+                            <h3>Total Hoy</h3>
+                            <p id="total-tickets">0</p>
+                        </div>
+                        <div class="metric-card pending">
+                            <h3>En Espera</h3>
+                            <p id="pending-tickets">0</p>
+                        </div>
+                        <div class="metric-card attending">
+                            <h3>Atendiendo</h3>
+                            <p id="attending-tickets">0</p>
+                        </div>
+                        <div class="metric-card closed">
+                            <h3>Cerrados</h3>
+                            <p id="closed-tickets">0</p>
+                        </div>
+                    </div>
+                    <div class="details-grid">
+                        <div>
+                            <h3>Estado de Colas</h3>
+                            <ul id="queue-details" class="queue-list"></ul>
+                        </div>
+                        <div>
+                            <h3>Estado de Ejecutivos</h3>
+                            <ul id="executive-details" class="executive-list"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q-Insight: Embedded JavaScript for Frontend Logic -->
+    <!-- This script handles form submissions and dashboard updates by making API calls. -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const API_BASE_URL = window.location.origin;
+
+            const createTicketForm = document.getElementById('create-ticket-form');
+            const createResultDiv = document.getElementById('create-result');
+
+            const checkStatusForm = document.getElementById('check-status-form');
+            const statusResultDiv = document.getElementById('status-result');
+
+            // Dashboard elements
+            const totalTicketsEl = document.getElementById('total-tickets');
+            const pendingTicketsEl = document.getElementById('pending-tickets');
+            const attendingTicketsEl = document.getElementById('attending-tickets');
+            const closedTicketsEl = document.getElementById('closed-tickets');
+            const queueDetailsUl = document.getElementById('queue-details');
+            const executiveDetailsUl = document.getElementById('executive-details');
+
+            // --- Ticket Creation ---
+            createTicketForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                createResultDiv.innerHTML = 'Procesando...';
+
+                const requestBody = {
+                    customerId: document.getElementById('customerId').value,
+                    attentionType: document.getElementById('attentionType').value,
+                    telegramChatId: document.getElementById('telegramChatId').value
+                };
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/tickets`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(requestBody)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Error: ${response.statusText}`);
+                    }
+
+                    const data = await response.json();
+                    createResultDiv.innerHTML = `
+                        <strong>¡Ticket Creado!</strong><br>
+                        Número: <strong>${data.ticketNumber}</strong><br>
+                        Posición en fila: ${data.queuePosition}<br>
+                        Espera estimada: ${data.estimatedWaitTimeMinutes} min
+                    `;
+                    createTicketForm.reset();
+                } catch (error) {
+                    createResultDiv.innerHTML = `<strong style="color:red;">Error al crear ticket: ${error.message}</strong>`;
+                }
+            });
+
+            // --- Ticket Status Check ---
+            checkStatusForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                statusResultDiv.innerHTML = 'Consultando...';
+                const ticketNumber = document.getElementById('ticketNumber').value;
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/tickets/${ticketNumber}/status`);
+                    if (!response.ok) {
+                        throw new Error('Ticket no encontrado o error en el servidor.');
+                    }
+                    const data = await response.json();
+                    let executiveInfo = data.assignedExecutiveName 
+                        ? `Asignado a: ${data.assignedExecutiveName} en ${data.executiveModule}` 
+                        : 'Esperando asignación de ejecutivo.';
+
+                    statusResultDiv.innerHTML = `
+                        <strong>Estado del Ticket ${data.ticketNumber}</strong><br>
+                        Estado: <strong>${data.status}</strong><br>
+                        Posición en fila: ${data.queuePosition > 0 ? data.queuePosition : '-'}<br>
+                        Espera estimada: ${data.estimatedWaitTimeMinutes > 0 ? data.estimatedWaitTimeMinutes + ' min' : '-'}<br>
+                        ${executiveInfo}
+                    `;
+                } catch (error) {
+                    statusResultDiv.innerHTML = `<strong style="color:red;">${error.message}</strong>`;
+                }
+            });
+            
+            // --- Dashboard Logic ---
+            const updateDashboard = async () => {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/dashboard`);
+                    if (!response.ok) return;
+                    const data = await response.json();
+
+                    // Update metric cards
+                    totalTicketsEl.textContent = data.totalTicketsToday;
+                    pendingTicketsEl.textContent = data.ticketsByStatus.PENDING || 0;
+                    attendingTicketsEl.textContent = data.ticketsByStatus.ATTENDING || 0;
+                    closedTicketsEl.textContent = data.ticketsByStatus.CLOSED || 0;
+                    
+                    // Update queue details
+                    queueDetailsUl.innerHTML = data.queueDetails.map(q => `
+                        <li class="list-item">
+                            <span>${q.attentionType}</span>
+                            <strong>${q.waitingCustomers} en espera (${q.averageWaitTimeMinutes} min)</strong>
+                        </li>
+                    `).join('');
+
+                    // Update executive details
+                    executiveDetailsUl.innerHTML = data.executiveDetails.map(e => {
+                        const attentionTypesCheckboxes = data.allAttentionTypes.map(type => `
+                            <label>
+                                <input type="checkbox" class="attention-type-checkbox" value="${type}" 
+                                    ${e.supportedAttentionTypes.includes(type) ? 'checked' : ''}>
+                                ${type}
+                            </label>
+                        `).join('');
+
+                        return `
+                            <li class="list-item executive-item" data-executive-id="${e.id}">
+                                <div class="executive-info">
+                                    <div>
+                                        <strong>${e.fullName} (Módulo: ${e.module})</strong><br>
+                                        <small>Ticket Actual: ${e.currentTicketNumber || '---'}</small>
+                                    </div>
+                                    <span class="status ${e.status}">${e.status}</span>
+                                </div>
+                                <div class="executive-controls">
+                                    <div class="attention-types-control">
+                                        ${attentionTypesCheckboxes}
+                                    </div>
+                                    <button class="end-session-btn" ${e.status !== 'BUSY' ? 'disabled' : ''}>Finalizar Atención</button>
+                                </div>
+                            </li>
+                        `;
+                    }).join('');
+
+                } catch (error) {
+                    console.error("Failed to update dashboard:", error);
+                }
+            };
+
+            // --- Event Delegation for Executive Controls ---
+            executiveDetailsUl.addEventListener('click', async (event) => {
+                const target = event.target;
+                const executiveItem = target.closest('.executive-item');
+                if (!executiveItem) return;
+                
+                const executiveId = executiveItem.dataset.executiveId;
+
+                // Handle "End Session" button click
+                if (target.classList.contains('end-session-btn')) {
+                    target.disabled = true;
+                    target.textContent = 'Finalizando...';
+                    try {
+                        await fetch(`${API_BASE_URL}/api/executives/${executiveId}/end-ticket`, { method: 'POST' });
+                        updateDashboard(); // Refresh dashboard immediately
+                    } catch (error) {
+                        console.error('Failed to end session:', error);
+                        target.textContent = 'Error';
+                    }
+                }
+            });
+
+            executiveDetailsUl.addEventListener('change', async (event) => {
+                const target = event.target;
+                const executiveItem = target.closest('.executive-item');
+                if (!executiveItem || !target.classList.contains('attention-type-checkbox')) return;
+                
+                const executiveId = executiveItem.dataset.executiveId;
+                const checkboxes = executiveItem.querySelectorAll('.attention-type-checkbox');
+                const selectedTypes = Array.from(checkboxes)
+                    .filter(cb => cb.checked)
+                    .map(cb => cb.value);
+
+                try {
+                    await fetch(`${API_BASE_URL}/api/executives/${executiveId}/attention-types`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ attentionTypes: selectedTypes })
+                    });
+                } catch (error) {
+                    console.error('Failed to update attention types:', error);
+                    // Optionally, revert the checkbox to its previous state
+                }
+            });
+            
+            // Initial load and periodic refresh
+            updateDashboard();
+            setInterval(updateDashboard, 5000); // RF-007: Refresh every 5 seconds
+        });
+    </script>
+</body>
+</html>

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -147,5 +148,35 @@ public class TicketService {
                                 });
                     });
         });
+    }
+
+    /**
+     * Closes the currently active ticket for a specific executive.
+     * This is a manual action triggered from the supervisor dashboard.
+     * @param executiveId The ID of the executive finishing the attention.
+     */
+    @Transactional
+    public void closeCurrentTicketForExecutive(UUID executiveId) {
+        Executive executive = executiveRepository.findById(executiveId)
+                .orElseThrow(() -> new com.institucion.ticketero.common.exceptions.ResourceNotFoundException("Executive not found with ID: " + executiveId));
+
+        if (executive.getStatus() == ExecutiveStatus.AVAILABLE) {
+            // Nothing to do if the executive is already available
+            return;
+        }
+
+        // Find the ticket this executive is currently attending
+        ticketRepository.findByExecutiveIdAndStatus(executive.getId(), TicketStatus.ATTENDING)
+                .stream().findFirst()
+                .ifPresent(ticket -> {
+                    ticket.setStatus(TicketStatus.CLOSED);
+                    ticket.setClosedAt(LocalDateTime.now());
+                    ticketRepository.save(ticket);
+                });
+
+        // Free up the executive
+        executive.setStatus(ExecutiveStatus.AVAILABLE);
+        executive.setLastStatusChange(LocalDateTime.now());
+        executiveRepository.save(executive);
     }
 }

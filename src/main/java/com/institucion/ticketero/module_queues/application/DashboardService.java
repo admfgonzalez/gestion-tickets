@@ -56,7 +56,7 @@ public class DashboardService {
                 .map(this::mapToExecutiveStatusResponse)
                 .collect(Collectors.toList());
 
-        return new DashboardMetricsResponse(totalTickets, ticketsByStatus, queueDetails, executiveDetails);
+        return new DashboardMetricsResponse(totalTickets, ticketsByStatus, queueDetails, executiveDetails, List.of(com.institucion.ticketero.module_queues.domain.AttentionType.values()));
     }
 
     private ExecutiveStatusResponse mapToExecutiveStatusResponse(Executive executive) {
@@ -67,10 +67,12 @@ public class DashboardService {
                 .orElse(null);
 
         return new ExecutiveStatusResponse(
+                executive.getId(),
                 executive.getFullName(),
                 executive.getModule(),
                 executive.getStatus(),
-                currentTicketNumber
+                currentTicketNumber,
+                executive.getSupportedAttentionTypes()
         );
     }
 }
