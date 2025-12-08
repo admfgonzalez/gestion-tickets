@@ -37,12 +37,6 @@ class TicketServiceTest {
 
     @InjectMocks
     private TicketService ticketService;
-    
-    @BeforeEach
-    void setUp() {
-        // Reset the counter before each test to ensure isolation
-        ticketService.resetTicketCounter();
-    }
 
     @Test
     void testCreateTicket() {
