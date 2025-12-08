@@ -56,6 +56,16 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID> {
     long countByCreatedAtAfter(LocalDateTime startTime);
 
     /**
+     * Q-Insight: Counts tickets for a specific type created after a certain time.
+     * This is the cornerstone of the new daily-sequential ticket number generation logic.
+     * It allows us to find out how many 'CAJA' tickets, for example, have been created today.
+     * @param attentionType The type of attention.
+     * @param startTime The start of the time window (e.g., beginning of the day).
+     * @return The count of matching tickets.
+     */
+    long countByAttentionTypeAndCreatedAtAfter(AttentionType attentionType, LocalDateTime startTime);
+
+    /**
      * Q-Insight: Finds tickets that require a pre-arrival notification.
      * This query selects tickets that are 'nth' in line, triggering the "pre-aviso" notification (RF-002).
      * The native query is complex because it needs to calculate the rank of tickets within each queue type.

@@ -47,9 +47,6 @@ public class WorkdayService {
             throw new IllegalStateException("A workday is already active.");
         }
 
-        // Reset ticket counter
-        ticketService.resetTicketCounter();
-
         Workday newWorkday = new Workday();
         newWorkday.setStartTime(LocalDateTime.now());
         newWorkday.setStatus(WorkdayStatus.ACTIVE);

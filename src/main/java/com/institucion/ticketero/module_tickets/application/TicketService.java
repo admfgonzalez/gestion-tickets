@@ -15,9 +15,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Q-Insight: Application Service for Tickets.
@@ -31,7 +31,6 @@ public class TicketService {
     private final ExecutiveRepository executiveRepository;
     private final NotificationService notificationService;
     private final QueueService queueService;
-    private final AtomicLong ticketCounter = new AtomicLong(1); // Initial sequence number
 
     public TicketService(TicketRepository ticketRepository, ExecutiveRepository executiveRepository, NotificationService notificationService, QueueService queueService) {
         this.ticketRepository = ticketRepository;
@@ -54,7 +53,10 @@ public class TicketService {
         ticket.setTelegramChatId(request.telegramChatId());
         ticket.setAttentionType(request.attentionType());
         ticket.setStatus(TicketStatus.PENDING);
-        ticket.setTicketNumber(generateTicketNumber(request.attentionType()));
+        
+        // The ticket number is now generated transactionally within this method.
+        String ticketNumber = generateTicketNumber(request.attentionType());
+        ticket.setTicketNumber(ticketNumber);
 
         Ticket savedTicket = ticketRepository.save(ticket);
 
@@ -102,8 +104,9 @@ public class TicketService {
     }
     
     /**
-     * Q-Insight: Generates a unique, human-readable ticket number.
-     * Example: CAJA -> CA-101, PERSONAL_BANKER -> PB-102.
+     * Q-Insight: Generates a unique, human-readable ticket number that is unique per day, per attention type.
+     * Example: CA-1, CA-2, PB-1, PB-2. The counters reset each day.
+     * This logic is robust against application restarts and multiple instances.
      * @param attentionType The type of attention for the ticket.
      * @return The generated ticket number string.
      */
@@ -114,7 +117,12 @@ public class TicketService {
             case EMPRESAS -> "EM";
             case GERENCIA -> "GE";
         };
-        return prefix + "-" + ticketCounter.incrementAndGet();
+        
+        // Get the count of tickets of this type created today and add 1.
+        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
+        long sequenceNumber = ticketRepository.countByAttentionTypeAndCreatedAtAfter(attentionType, startOfDay) + 1;
+        
+        return prefix + "-" + sequenceNumber;
     }
 
     /**
@@ -148,10 +156,6 @@ public class TicketService {
                                 });
                     });
         });
-    }
-
-    public void resetTicketCounter() {
-        ticketCounter.set(0);
     }
 
     /**
