@@ -36,8 +36,11 @@ spring:
 telegram:
   bot:
     token: ${TELEGRAM_BOT_TOKEN:YOUR_TELEGRAM_BOT_TOKEN_HERE}
+    username: ${TELEGRAM_BOT_USERNAME:your_bot_username}
 
 logging:
   level:
     root: INFO
     com.institucion.ticketero: DEBUG # More verbose logging for our application code.
+    org.hibernate.SQL: WARN # Suppress SQL statement logging
+    org.hibernate.type.descriptor.sql: WARN # Suppress SQL parameter logging

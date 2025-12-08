@@ -233,6 +233,41 @@
             transition: max-height 0.3s ease-out;
             background-color: #fff;
         }
+
+        /* Styles for Executive Management */
+        .mb-3 { margin-bottom: 1rem; }
+        .mr-2 { margin-right: 0.5rem; }
+        .btn-secondary { background-color: #6c757d; }
+        .btn-secondary:hover { background-color: #5a6268; }
+        .executive-management-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        .executive-management-table th, .executive-management-table td {
+            border: 1px solid #dee2e6;
+            padding: 0.75rem;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+        .executive-management-table thead th {
+            background-color: #e9ecef;
+            font-weight: bold;
+        }
+        .executive-management-table tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .executive-management-table button {
+            padding: 0.5rem 0.8rem;
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+        }
+        .executive-management-table .delete-btn {
+            background-color: var(--danger-color);
+        }
+        .executive-management-table .delete-btn:hover {
+            background-color: #c82333;
+        }
     </style>
 </head>
 <body>
@@ -305,6 +340,52 @@
                     </form>
                     <div id="status-result" style="margin-top: 1rem;"></div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Executive Management -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <h2 class="collapsible">Gestión de Ejecutivos</h2>
+            <div class="collapsible-content">
+                <button id="add-executive-btn" class="mb-3">Agregar Nuevo Ejecutivo</button>
+
+                <div id="executive-form-section" style="display: none; margin-bottom: 1rem; padding: 1rem; border: 1px solid #eee; border-radius: 5px;">
+                    <h3><span id="form-title">Crear</span> Ejecutivo</h3>
+                    <form id="executive-form">
+                        <input type="hidden" id="executive-id">
+                        <div class="form-group">
+                            <label for="executive-full-name">Nombre Completo</label>
+                            <input type="text" id="executive-full-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="executive-module">Módulo</label>
+                            <input type="text" id="executive-module" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tipos de Atención Soportados</label>
+                            <div id="executive-attention-types-checkboxes" class="attention-types-control">
+                                <!-- Checkboxes will be populated by JS -->
+                            </div>
+                        </div>
+                        <button type="submit" class="mr-2">Guardar</button>
+                        <button type="button" id="cancel-executive-form-btn" class="btn-secondary">Cancelar</button>
+                    </form>
+                </div>
+
+                <table class="executive-management-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Módulo</th>
+                            <th>Estado</th>
+                            <th>Atenciones</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="executive-management-table-body">
+                        <!-- Executives will be loaded here -->
+                    </tbody>
+                </table>
             </div>
         </div>
 
@@ -627,6 +708,155 @@
             updateWorkdayStatus();
             updateWorkdayHistory();
             setInterval(updateWorkdayHistory, 60000); // Refresh history every minute
+
+            // --- Executive Management Logic ---
+            const addExecutiveBtn = document.getElementById('add-executive-btn');
+            const executiveFormSection = document.getElementById('executive-form-section');
+            const executiveForm = document.getElementById('executive-form');
+            const cancelExecutiveFormBtn = document.getElementById('cancel-executive-form-btn');
+            const formTitle = document.getElementById('form-title');
+            const executiveIdField = document.getElementById('executive-id');
+            const executiveFullNameField = document.getElementById('executive-full-name');
+            const executiveModuleField = document.getElementById('executive-module');
+            const executiveAttentionTypesCheckboxesDiv = document.getElementById('executive-attention-types-checkboxes');
+            const executiveManagementTableBody = document.getElementById('executive-management-table-body');
+
+            let allAttentionTypes = []; // To store all available attention types
+
+            async function fetchAndRenderExecutiveManagementTable() {
+                try {
+                    const dashboardResponse = await fetch(`${API_BASE_URL}/api/dashboard`);
+                    const dashboardData = await dashboardResponse.json();
+                    allAttentionTypes = dashboardData.allAttentionTypes; // Get all types from dashboard API
+
+                    // Populate attention type checkboxes for the form
+                    executiveAttentionTypesCheckboxesDiv.innerHTML = allAttentionTypes.map(type => `
+                        <label>
+                            <input type="checkbox" class="executive-form-attention-type" value="${type}">
+                            ${type}
+                        </label>
+                    `).join('');
+
+                    const executivesResponse = await fetch(`${API_BASE_URL}/api/executives`);
+                    const executives = await executivesResponse.json();
+                    
+                    executiveManagementTableBody.innerHTML = executives.map(executive => {
+                        const supportedTypes = executive.supportedAttentionTypes.map(type => `<span class="badge badge-info">${type}</span>`).join(' ');
+                        return `
+                            <tr>
+                                <td>${executive.fullName}</td>
+                                <td>${executive.module}</td>
+                                <td><span class="status ${executive.status}">${executive.status}</span></td>
+                                <td>${supportedTypes}</td>
+                                <td>
+                                    <button class="edit-executive-btn" data-executive-id="${executive.id}">Editar</button>
+                                    <button class="delete-executive-btn danger-btn" data-executive-id="${executive.id}">Eliminar</button>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+                } catch (error) {
+                    console.error("Error fetching executives for management:", error);
+                    executiveManagementTableBody.innerHTML = '<tr><td colspan="5">Error al cargar ejecutivos.</td></tr>';
+                }
+            }
+
+            function showExecutiveForm(executive = null) {
+                executiveFormSection.style.display = 'block';
+                executiveForm.reset();
+                if (executive) {
+                    formTitle.textContent = 'Editar';
+                    executiveIdField.value = executive.id;
+                    executiveFullNameField.value = executive.fullName;
+                    executiveModuleField.value = executive.module;
+                    executive.supportedAttentionTypes.forEach(type => {
+                        const checkbox = executiveAttentionTypesCheckboxesDiv.querySelector(`input[value="${type}"]`);
+                        if (checkbox) checkbox.checked = true;
+                    });
+                } else {
+                    formTitle.textContent = 'Crear';
+                    executiveIdField.value = '';
+                }
+            }
+
+            function hideExecutiveForm() {
+                executiveFormSection.style.display = 'none';
+                executiveForm.reset();
+            }
+
+            addExecutiveBtn.addEventListener('click', () => showExecutiveForm());
+            cancelExecutiveFormBtn.addEventListener('click', hideExecutiveForm);
+
+            executiveForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const executiveId = executiveIdField.value;
+                const url = executiveId ? `${API_BASE_URL}/api/executives/${executiveId}` : `${API_BASE_URL}/api/executives`;
+                const method = executiveId ? 'PUT' : 'POST';
+
+                const selectedAttentionTypes = Array.from(executiveAttentionTypesCheckboxesDiv.querySelectorAll('input:checked'))
+                    .map(cb => cb.value);
+
+                const requestBody = {
+                    fullName: executiveFullNameField.value,
+                    module: executiveModuleField.value,
+                    supportedAttentionTypes: selectedAttentionTypes
+                };
+
+                try {
+                    const response = await fetch(url, {
+                        method: method,
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(requestBody)
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || 'Error en la operación.');
+                    }
+
+                    hideExecutiveForm();
+                    fetchAndRenderExecutiveManagementTable(); // Refresh table
+                    updateDashboard(); // Refresh supervisor dashboard
+                } catch (error) {
+                    alert(`Error: ${error.message}`);
+                    console.error('Error saving executive:', error);
+                }
+            });
+
+            executiveManagementTableBody.addEventListener('click', async (event) => {
+                const target = event.target;
+                const executiveId = target.dataset.executiveId;
+
+                if (target.classList.contains('edit-executive-btn')) {
+                    try {
+                        const response = await fetch(`${API_BASE_URL}/api/executives/${executiveId}`);
+                        const executive = await response.json();
+                        showExecutiveForm(executive);
+                    } catch (error) {
+                        alert(`Error al cargar ejecutivo para editar: ${error.message}`);
+                        console.error('Error fetching executive for edit:', error);
+                    }
+                } else if (target.classList.contains('delete-executive-btn')) {
+                    if (confirm('¿Está seguro que desea eliminar este ejecutivo?')) {
+                        try {
+                            const response = await fetch(`${API_BASE_URL}/api/executives/${executiveId}`, {
+                                method: 'DELETE'
+                            });
+                            if (!response.ok) {
+                                throw new Error('Error al eliminar ejecutivo.');
+                            }
+                            fetchAndRenderExecutiveManagementTable(); // Refresh table
+                            updateDashboard(); // Refresh supervisor dashboard
+                        } catch (error) {
+                            alert(`Error: ${error.message}`);
+                            console.error('Error deleting executive:', error);
+                        }
+                    }
+                }
+            });
+
+            // Initial load for executive management
+            fetchAndRenderExecutiveManagementTable();
         });
     </script>
 </body>

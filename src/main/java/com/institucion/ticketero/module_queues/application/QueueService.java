@@ -6,8 +6,10 @@ import com.institucion.ticketero.module_tickets.domain.TicketStatus;
 import com.institucion.ticketero.module_tickets.infrastructure.TicketRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -27,21 +29,25 @@ public class QueueService {
     /**
      * Q-Insight: Gets the status of all queues.
      * This method calculates real-time metrics for each attention type, as required for the dashboard (RF-007).
+     * @param workdayStartTime Optional start time of the active workday to scope metrics.
      * @return A list of DTOs, each representing the status of one queue.
      */
-    public List<QueueStatusResponse> getAllQueueStatus() {
+    public List<QueueStatusResponse> getAllQueueStatus(Optional<LocalDateTime> workdayStartTime) {
         return Arrays.stream(AttentionType.values())
-                .map(this::getQueueStatus)
+                .map(attentionType -> getQueueStatus(attentionType, workdayStartTime))
                 .collect(Collectors.toList());
     }
 
     /**
      * Q-Insight: Gets the status of a single queue.
      * @param attentionType The specific queue to query.
+     * @param workdayStartTime Optional start time of the active workday to scope metrics.
      * @return A DTO with the metrics for the requested queue.
      */
-    public QueueStatusResponse getQueueStatus(AttentionType attentionType) {
-        long waitingCustomers = ticketRepository.countByAttentionTypeAndStatusAndCreatedAtBefore(attentionType, TicketStatus.PENDING, java.time.LocalDateTime.now());
+    public QueueStatusResponse getQueueStatus(AttentionType attentionType, Optional<LocalDateTime> workdayStartTime) {
+        LocalDateTime filterStartTime = workdayStartTime.orElse(java.time.LocalDate.now().atStartOfDay());
+
+        long waitingCustomers = ticketRepository.countByAttentionTypeAndStatusAndCreatedAtBefore(attentionType, TicketStatus.PENDING, filterStartTime);
         long averageWaitTime = calculateAverageWaitTime(attentionType, waitingCustomers);
         return new QueueStatusResponse(attentionType, (int) waitingCustomers, averageWaitTime);
     }

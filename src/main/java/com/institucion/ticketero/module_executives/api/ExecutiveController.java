@@ -6,6 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/executives")
@@ -18,6 +22,41 @@ public class ExecutiveController {
         this.ticketService = ticketService;
         this.executiveService = executiveService;
     }
+
+    // CRUD Operations for Executives
+
+    @PostMapping
+    public ResponseEntity<ExecutiveDetailsResponse> createExecutive(@Valid @RequestBody CreateExecutiveRequest request) {
+        ExecutiveDetailsResponse newExecutive = executiveService.createExecutive(request);
+        return new ResponseEntity<>(newExecutive, HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ExecutiveDetailsResponse>> getAllExecutives() {
+        List<ExecutiveDetailsResponse> executives = executiveService.getAllExecutives();
+        return ResponseEntity.ok(executives);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ExecutiveDetailsResponse> getExecutiveById(@PathVariable UUID id) {
+        ExecutiveDetailsResponse executive = executiveService.getExecutiveById(id);
+        return ResponseEntity.ok(executive);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ExecutiveDetailsResponse> updateExecutive(@PathVariable UUID id, @Valid @RequestBody UpdateExecutiveRequest request) {
+        ExecutiveDetailsResponse updatedExecutive = executiveService.updateExecutive(id, request);
+        return ResponseEntity.ok(updatedExecutive);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteExecutive(@PathVariable UUID id) {
+        executiveService.deleteExecutive(id);
+        return ResponseEntity.noContent().build();
+    }
+
+
+    // Existing Executive Controls
 
     @PostMapping("/{id}/end-ticket")
     public ResponseEntity<Void> endCurrentTicket(@PathVariable UUID id) {

@@ -8,6 +8,7 @@ import com.institucion.ticketero.module_queues.api.QueueStatusResponse;
 import com.institucion.ticketero.module_tickets.domain.Ticket;
 import com.institucion.ticketero.module_tickets.domain.TicketStatus;
 import com.institucion.ticketero.module_tickets.infrastructure.TicketRepository;
+import com.institucion.ticketero.module_workday.application.WorkdayService; // New import
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,7 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional; // New import
 import java.util.stream.Collectors;
 
 /**
@@ -29,11 +31,13 @@ public class DashboardService {
     private final TicketRepository ticketRepository;
     private final ExecutiveRepository executiveRepository;
     private final QueueService queueService;
+    private final WorkdayService workdayService; // New field
 
-    public DashboardService(TicketRepository ticketRepository, ExecutiveRepository executiveRepository, QueueService queueService) {
+    public DashboardService(TicketRepository ticketRepository, ExecutiveRepository executiveRepository, QueueService queueService, WorkdayService workdayService) {
         this.ticketRepository = ticketRepository;
         this.executiveRepository = executiveRepository;
         this.queueService = queueService;
+        this.workdayService = workdayService; // Inject
     }
 
     /**
@@ -44,14 +48,16 @@ public class DashboardService {
      */
     @Transactional(readOnly = true)
     public DashboardMetricsResponse getDashboardMetrics() {
-        long totalTickets = ticketRepository.countByCreatedAtAfter(LocalDate.now().atStartOfDay());
+        Optional<com.institucion.ticketero.module_workday.domain.Workday> activeWorkday = workdayService.getActiveWorkday();
+        long totalTickets = activeWorkday.map(workday -> ticketRepository.countByCreatedAtAfter(workday.getStartTime())).orElse(0L);
+        
         Map<String, Long> ticketsByStatus = Arrays.stream(TicketStatus.values())
                 .collect(Collectors.toMap(
                         Enum::name,
                         ticketRepository::countByStatus
                 ));
 
-        List<QueueStatusResponse> queueDetails = queueService.getAllQueueStatus();
+        List<QueueStatusResponse> queueDetails = queueService.getAllQueueStatus(activeWorkday.map(com.institucion.ticketero.module_workday.domain.Workday::getStartTime));
         List<ExecutiveStatusResponse> executiveDetails = executiveRepository.findAll().stream()
                 .map(this::mapToExecutiveStatusResponse)
                 .collect(Collectors.toList());

@@ -28,4 +28,10 @@ public interface NotificationService {
      * @param ticket The ticket that has just been assigned to an executive.
      */
     void sendTurnActiveAlert(Ticket ticket);
+
+    /**
+     * Retrieves the configured username of the Telegram bot.
+     * @return The bot's username.
+     */
+    String getBotUsername();
 }

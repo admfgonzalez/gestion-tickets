@@ -3,7 +3,10 @@ package com.institucion.ticketero.module_notifications.infrastructure;
 import com.institucion.ticketero.module_notifications.application.NotificationService;
 import com.institucion.ticketero.module_tickets.domain.Ticket;
 import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.UpdatesListener;
+import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,9 +25,45 @@ public class TelegramNotificationService implements NotificationService {
     private static final Logger logger = LoggerFactory.getLogger(TelegramNotificationService.class);
 
     private final TelegramBot bot;
+    private final String botUsername;
 
-    public TelegramNotificationService(@Value("${telegram.bot.token}") String botToken) {
+    public TelegramNotificationService(@Value("${telegram.bot.token}") String botToken,
+                                       @Value("${telegram.bot.username}") String botUsername) {
         this.bot = new TelegramBot(botToken);
+        this.botUsername = botUsername;
+    }
+
+    @PostConstruct
+    public void init() {
+        // Set up the listener to receive updates from Telegram
+        bot.setUpdatesListener(updates -> {
+            for (Update update : updates) {
+                logger.debug("Received Telegram update: {}", update);
+                // Process only new messages
+                if (update.message() != null && update.message().text() != null) {
+                    Long chatId = update.message().chat().id();
+                    String messageText = update.message().text();
+
+                    if (messageText.equals("/start")) {
+                        String response = "Hola! Tu ID de chat es: `" + chatId + "`\n" +
+                                "Por favor, copia este ID y pégalo en el campo 'ID de Chat de Telegram' en el formulario.";
+                        sendMessage(String.valueOf(chatId), response);
+                    }
+                } else if (update.myChatMember() != null && update.myChatMember().newChatMember().status().equals("member")) {
+                    // Handle bot being added to a chat (e.g., a new user starting a private chat with the bot)
+                    Long chatId = update.myChatMember().chat().id();
+                    String response = "¡Gracias por iniciar una conversación! Tu ID de chat es: `" + chatId + "`\n" +
+                            "Por favor, copia este ID y pégalo en el campo 'ID de Chat de Telegram' en el formulario.";
+                    sendMessage(String.valueOf(chatId), response);
+                }
+            }
+            return UpdatesListener.CONFIRMED_UPDATES_ALL;
+        });
+    }
+
+    @Override
+    public String getBotUsername() {
+        return botUsername;
     }
 
     @Async

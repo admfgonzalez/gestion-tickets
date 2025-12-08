@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Tickets</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
     <style>
         :root {
             --background-color: #f0f2f5;
@@ -141,6 +142,15 @@
                     <label for="customerId">RUT / ID</label>
                     <input type="text" id="customerId" placeholder="Ej: 12345678-9" required>
                 </div>
+                <div style="text-align: center; margin-bottom: 1.5rem;">
+                    <h3>Recibe notificaciones por Telegram</h3>
+                    <p>Escanea este QR con Telegram para iniciar una conversación con nuestro bot y obtener tu ID de chat.</p>
+                    <canvas id="qr-code-canvas" style="width: 150px; height: 150px; border: 1px solid #eee;"></canvas>
+                    <p style="font-size: 0.9em; color: #666; margin-top: 0.5rem;">
+                        Una vez que inicies el chat, envía el mensaje <strong id="telegram-start-command">/start</strong>.<br>
+                        El bot te enviará tu ID de chat. Cópialo y pégalo en el campo de abajo.
+                    </p>
+                </div>
                 <div class="form-group">
                     <label for="telegramChatId">ID de Chat de Telegram (Opcional)</label>
                     <input type="text" id="telegramChatId" placeholder="Para recibir notificaciones">
@@ -241,6 +251,41 @@
             // Initial load and periodic refresh for "Now Serving"
             fetchAndRenderServing();
             setInterval(fetchAndRenderServing, 5000);
+
+            // --- Telegram QR Code Logic ---
+            const qrCodeCanvas = document.getElementById('qr-code-canvas');
+            const telegramStartCommandEl = document.getElementById('telegram-start-command');
+
+            const generateTelegramQrCode = async () => {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/notifications/telegram-bot-username`);
+                    if (!response.ok) {
+                        console.error('Failed to get Telegram bot username.');
+                        return;
+                    }
+                    const botUsername = await response.text();
+                    
+                    if (botUsername && botUsername !== 'your_bot_username') { // Check for placeholder
+                        const telegramLink = `https://t.me/${botUsername}`;
+                        new QRious({
+                            element: qrCodeCanvas,
+                            value: telegramLink,
+                            size: 150
+                        });
+                        telegramStartCommandEl.textContent = `/start`;
+                    } else {
+                        qrCodeCanvas.style.display = 'none';
+                        telegramStartCommandEl.textContent = '/start (configure bot username)';
+                        console.warn('Telegram bot username is not configured.');
+                    }
+                } catch (error) {
+                    console.error('Error generating Telegram QR code:', error);
+                    qrCodeCanvas.style.display = 'none';
+                    telegramStartCommandEl.textContent = '/start (error)';
+                }
+            };
+
+            generateTelegramQrCode();
         });
     </script>
 </body>
