@@ -1,0 +1,8 @@
+server:
+  port: 8081
+
+logging:
+  level:
+    org.springframework: INFO
+    com.institucion.ticketero: DEBUG
+    org.testcontainers: INFO

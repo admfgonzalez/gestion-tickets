@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.institucion.ticketero.module_notifications.infrastructure.TelegramNotificationServiceTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2025-12-08T11:40:59" hostname="PANCHOX" time="0.089">
+  <properties/>
+  <testcase name="whenSendTicketConfirmation_thenBotExecuteIsCalled()" classname="com.institucion.ticketero.module_notifications.infrastructure.TelegramNotificationServiceTest" time="0.076"/>
+  <testcase name="whenSendTurnActiveAlert_thenBotExecuteIsCalled()" classname="com.institucion.ticketero.module_notifications.infrastructure.TelegramNotificationServiceTest" time="0.004"/>
+  <testcase name="whenChatIdIsMissing_thenBotIsNotCalled()" classname="com.institucion.ticketero.module_notifications.infrastructure.TelegramNotificationServiceTest" time="0.002"/>
+  <testcase name="whenSendPreArrivalAlert_thenBotExecuteIsCalled()" classname="com.institucion.ticketero.module_notifications.infrastructure.TelegramNotificationServiceTest" time="0.002"/>
+  <system-out><![CDATA[2025-12-08T08:41:00.056-03:00  INFO 14308 --- [    Test worker] c.i.t.m.i.TelegramNotificationService    : Successfully sent Telegram message to chatId: chat123
+2025-12-08T08:41:00.063-03:00  INFO 14308 --- [    Test worker] c.i.t.m.i.TelegramNotificationService    : Successfully sent Telegram message to chatId: chat789
+2025-12-08T08:41:00.067-03:00  WARN 14308 --- [    Test worker] c.i.t.m.i.TelegramNotificationService    : Cannot send confirmation for ticket C-000: no Telegram chat ID.
+2025-12-08T08:41:00.069-03:00  INFO 14308 --- [    Test worker] c.i.t.m.i.TelegramNotificationService    : Successfully sent Telegram message to chatId: chat456
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

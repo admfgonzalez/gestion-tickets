@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2025-12-08T11:40:59" hostname="PANCHOX" time="0.252">
+  <properties/>
+  <testcase name="updateExecutive_whenExecutiveDoesNotExist_shouldThrowResourceNotFoundException()" classname="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" time="0.226"/>
+  <testcase name="getExecutiveById_whenExecutiveExists_shouldReturnExecutiveDetails()" classname="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" time="0.003"/>
+  <testcase name="deleteExecutive_whenExecutiveDoesNotExist_shouldThrowResourceNotFoundException()" classname="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" time="0.002"/>
+  <testcase name="updateSupportedAttentionTypes_whenExecutiveDoesNotExist_shouldThrowResourceNotFoundException()" classname="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" time="0.002"/>
+  <testcase name="getExecutiveById_whenExecutiveDoesNotExist_shouldThrowResourceNotFoundException()" classname="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" time="0.001"/>
+  <testcase name="deleteExecutive_whenExecutiveExists_shouldDeleteExecutive()" classname="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" time="0.002"/>
+  <testcase name="updateExecutive_whenExecutiveExists_shouldUpdateAndReturnExecutiveDetails()" classname="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" time="0.003"/>
+  <testcase name="getAllExecutives_shouldReturnListOfExecutives()" classname="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" time="0.003"/>
+  <testcase name="createExecutive_shouldReturnExecutiveDetails()" classname="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" time="0.002"/>
+  <testcase name="updateSupportedAttentionTypes_whenExecutiveExists_shouldUpdateTypes()" classname="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

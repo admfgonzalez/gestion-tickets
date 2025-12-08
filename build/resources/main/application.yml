@@ -2,16 +2,16 @@
 # This file contains the main configuration for the application.
 
 server:
-  port: 8080
+  port: ${SERVER_PORT}
 
 spring:
   # Q-Insight: Datasource Configuration.
   # Configures the connection to the PostgreSQL database.
   # Values are sourced from environment variables for security and flexibility.
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:ticketero_db}
-    username: ${DB_USER:user}
-    password: ${DB_PASSWORD:password}
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   # Q-Insight: JPA (Java Persistence API) Configuration.
@@ -35,9 +35,20 @@ spring:
 # The token is externalized to environment variables, a security best practice.
 telegram:
   bot:
-    token: ${TELEGRAM_BOT_TOKEN:YOUR_TELEGRAM_BOT_TOKEN_HERE}
+    token: ${TELEGRAM_BOT_TOKEN}
+
+# Q-Insight: Actuator Configuration
+# Exposes endpoints for monitoring and management.
+management:
+  endpoints:
+    web:
+      exposure:
+        # Expose 'health' and 'info' endpoints over HTTP
+        include: health,info
 
 logging:
   level:
     root: INFO
     com.institucion.ticketero: DEBUG # More verbose logging for our application code.
+    org.hibernate.SQL: WARN # Suppress SQL statement logging
+    org.hibernate.type.descriptor.sql: WARN # Suppress SQL parameter logging

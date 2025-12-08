@@ -1,0 +1,41 @@
+# Q-Insight: GitHub Actions CI Pipeline for the Ticketing System.
+# This workflow automates the build and test process for the application.
+
+name: Java CI with Gradle
+
+# Q-Insight: Triggers the workflow on pushes to the main branch and on any pull request.
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "**" ]
+
+jobs:
+  build:
+    # Q-Insight: Use a standard Ubuntu runner provided by GitHub.
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      # Q-Insight: Checks out the code from the repository.
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 21
+      # Q-Insight: Sets up the Java environment with the correct version.
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    - name: Set up Gradle
+      # Q-Insight: Caches Gradle dependencies and wrappers to speed up subsequent builds.
+      uses: gradle/actions/setup-gradle@v3
+
+    - name: Grant execute permission for gradlew
+      # Q-Insight: Necessary for the gradlew script to be executable in the CI environment.
+      run: chmod +x ./gradlew
+
+    - name: Build with Gradle
+      # Q-Insight: Runs the main build task. This will compile the code, run all tests,
+      # and assemble the application JAR. If tests fail, the build fails.
+      run: ./gradlew build
