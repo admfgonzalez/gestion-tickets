@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.institucion.ticketero.PublicDashboardControllerIntegrationTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2025-12-08T11:40:58" hostname="PANCHOX" time="0.451">
+<testsuite name="com.institucion.ticketero.PublicDashboardControllerIntegrationTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2025-12-08T11:54:13" hostname="PANCHOX" time="0.422">
   <properties/>
-  <testcase name="whenGetNowServing_withEmptyDatabase_shouldReturnOkAndEmptyList()" classname="com.institucion.ticketero.PublicDashboardControllerIntegrationTest" time="0.451"/>
-  <system-out><![CDATA[08:40:51.530 [Test worker] INFO org.testcontainers.images.PullPolicy -- Image pull policy will be performed by: DefaultPullPolicy()
-08:40:51.538 [Test worker] INFO org.testcontainers.utility.ImageNameSubstitutor -- Image name substitution will be performed by: DefaultImageNameSubstitutor (composite of 'ConfigurationFileImageNameSubstitutor' and 'PrefixingImageNameSubstitutor')
-08:40:51.676 [Test worker] INFO org.testcontainers.dockerclient.DockerClientProviderStrategy -- Loaded org.testcontainers.dockerclient.NpipeSocketClientProviderStrategy from ~/.testcontainers.properties, will try it first
-08:40:51.912 [Test worker] INFO org.testcontainers.dockerclient.DockerClientProviderStrategy -- Found Docker environment with local Npipe socket (npipe:////./pipe/docker_engine)
-08:40:51.913 [Test worker] INFO org.testcontainers.DockerClientFactory -- Docker host IP address is localhost
-08:40:51.929 [Test worker] INFO org.testcontainers.DockerClientFactory -- Connected to docker: 
+  <testcase name="whenGetNowServing_withEmptyDatabase_shouldReturnOkAndEmptyList()" classname="com.institucion.ticketero.PublicDashboardControllerIntegrationTest" time="0.422"/>
+  <system-out><![CDATA[08:54:06.047 [Test worker] INFO org.testcontainers.images.PullPolicy -- Image pull policy will be performed by: DefaultPullPolicy()
+08:54:06.055 [Test worker] INFO org.testcontainers.utility.ImageNameSubstitutor -- Image name substitution will be performed by: DefaultImageNameSubstitutor (composite of 'ConfigurationFileImageNameSubstitutor' and 'PrefixingImageNameSubstitutor')
+08:54:06.200 [Test worker] INFO org.testcontainers.dockerclient.DockerClientProviderStrategy -- Loaded org.testcontainers.dockerclient.NpipeSocketClientProviderStrategy from ~/.testcontainers.properties, will try it first
+08:54:06.378 [Test worker] INFO org.testcontainers.dockerclient.DockerClientProviderStrategy -- Found Docker environment with local Npipe socket (npipe:////./pipe/docker_engine)
+08:54:06.380 [Test worker] INFO org.testcontainers.DockerClientFactory -- Docker host IP address is localhost
+08:54:06.397 [Test worker] INFO org.testcontainers.DockerClientFactory -- Connected to docker: 
   Server Version: 28.4.0
   API Version: 1.51
   Operating System: Docker Desktop
   Total Memory: 15529 MB
-08:40:52.002 [Test worker] INFO tc.testcontainers/ryuk:0.6.0 -- Creating container for image: testcontainers/ryuk:0.6.0
-08:40:52.095 [Test worker] INFO org.testcontainers.utility.RegistryAuthLocator -- Credential helper/store (docker-credential-desktop) does not have credentials for https://index.docker.io/v1/
-08:40:52.191 [Test worker] INFO tc.testcontainers/ryuk:0.6.0 -- Container testcontainers/ryuk:0.6.0 is starting: 65ac33792ce8502743c6e6f1eff977bdd249cff6c3011e65cb74f6291314c3db
-08:40:52.554 [Test worker] INFO tc.testcontainers/ryuk:0.6.0 -- Container testcontainers/ryuk:0.6.0 started in PT0.5514459S
-08:40:52.558 [Test worker] INFO org.testcontainers.utility.RyukResourceReaper -- Ryuk started - will monitor and terminate Testcontainers containers on JVM exit
-08:40:52.558 [Test worker] INFO org.testcontainers.DockerClientFactory -- Checking the system...
-08:40:52.559 [Test worker] INFO org.testcontainers.DockerClientFactory -- ✔︎ Docker server version should be at least 1.6.0
-08:40:52.559 [Test worker] INFO tc.postgres:16-alpine -- Creating container for image: postgres:16-alpine
-08:40:52.628 [Test worker] INFO tc.postgres:16-alpine -- Container postgres:16-alpine is starting: aefe17e4e034713b0fedd75cf2612d53d248411608bfc69432b8702c3e1a1757
-08:40:54.282 [Test worker] INFO tc.postgres:16-alpine -- Container postgres:16-alpine started in PT1.7230449S
-08:40:54.284 [Test worker] INFO tc.postgres:16-alpine -- Container is started (JDBC URL: jdbc:postgresql://localhost:55314/test?loggerLevel=OFF)
+08:54:06.476 [Test worker] INFO tc.testcontainers/ryuk:0.6.0 -- Creating container for image: testcontainers/ryuk:0.6.0
+08:54:06.572 [Test worker] INFO org.testcontainers.utility.RegistryAuthLocator -- Credential helper/store (docker-credential-desktop) does not have credentials for https://index.docker.io/v1/
+08:54:06.708 [Test worker] INFO tc.testcontainers/ryuk:0.6.0 -- Container testcontainers/ryuk:0.6.0 is starting: d47db3d617f0cc9ea4866b2cbe37cf3febe038f60fad979a416cdf3104cf3221
+08:54:06.995 [Test worker] INFO tc.testcontainers/ryuk:0.6.0 -- Container testcontainers/ryuk:0.6.0 started in PT0.518767S
+08:54:06.999 [Test worker] INFO org.testcontainers.utility.RyukResourceReaper -- Ryuk started - will monitor and terminate Testcontainers containers on JVM exit
+08:54:06.999 [Test worker] INFO org.testcontainers.DockerClientFactory -- Checking the system...
+08:54:06.999 [Test worker] INFO org.testcontainers.DockerClientFactory -- ✔︎ Docker server version should be at least 1.6.0
+08:54:07.000 [Test worker] INFO tc.postgres:16-alpine -- Creating container for image: postgres:16-alpine
+08:54:07.070 [Test worker] INFO tc.postgres:16-alpine -- Container postgres:16-alpine is starting: 8a3d12e4e92bc266fe05b95a8b852aeb0a0d98da77b6899b257ebfbfb143dc32
+08:54:08.538 [Test worker] INFO tc.postgres:16-alpine -- Container postgres:16-alpine started in PT1.5382749S
+08:54:08.539 [Test worker] INFO tc.postgres:16-alpine -- Container is started (JDBC URL: jdbc:postgresql://localhost:56048/test?loggerLevel=OFF)
 Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
-08:40:54.347 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.institucion.ticketero.PublicDashboardControllerIntegrationTest]: PublicDashboardControllerIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-08:40:54.412 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.institucion.ticketero.TicketeroApplication for test class com.institucion.ticketero.PublicDashboardControllerIntegrationTest
+08:54:08.603 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.institucion.ticketero.PublicDashboardControllerIntegrationTest]: PublicDashboardControllerIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+08:54:08.670 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.institucion.ticketero.TicketeroApplication for test class com.institucion.ticketero.PublicDashboardControllerIntegrationTest
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -35,48 +35,48 @@ Standard Commons Logging discovery in action with spring-jcl: please remove comm
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::                (v3.2.5)
 
-2025-12-08T08:40:54.716-03:00  INFO 14308 --- [    Test worker] PublicDashboardControllerIntegrationTest : Starting PublicDashboardControllerIntegrationTest using Java 21.0.9 with PID 14308 (started by fgonzalez in C:\Users\fgonzalez\gestion-tickets)
-2025-12-08T08:40:54.717-03:00 DEBUG 14308 --- [    Test worker] PublicDashboardControllerIntegrationTest : Running with Spring Boot v3.2.5, Spring v6.1.6
-2025-12-08T08:40:54.718-03:00  INFO 14308 --- [    Test worker] PublicDashboardControllerIntegrationTest : The following 1 profile is active: "test"
-2025-12-08T08:40:55.416-03:00  INFO 14308 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-12-08T08:40:55.464-03:00  INFO 14308 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 42 ms. Found 3 JPA repository interfaces.
-2025-12-08T08:40:55.985-03:00  INFO 14308 --- [    Test worker] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
-2025-12-08T08:40:55.997-03:00  INFO 14308 --- [    Test worker] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-12-08T08:40:55.997-03:00  INFO 14308 --- [    Test worker] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.20]
-2025-12-08T08:40:56.069-03:00  INFO 14308 --- [    Test worker] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2025-12-08T08:40:56.069-03:00  INFO 14308 --- [    Test worker] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1341 ms
+2025-12-08T08:54:08.980-03:00  INFO 43732 --- [    Test worker] PublicDashboardControllerIntegrationTest : Starting PublicDashboardControllerIntegrationTest using Java 21.0.9 with PID 43732 (started by fgonzalez in C:\Users\fgonzalez\gestion-tickets)
+2025-12-08T08:54:08.981-03:00 DEBUG 43732 --- [    Test worker] PublicDashboardControllerIntegrationTest : Running with Spring Boot v3.2.5, Spring v6.1.6
+2025-12-08T08:54:08.981-03:00  INFO 43732 --- [    Test worker] PublicDashboardControllerIntegrationTest : The following 1 profile is active: "test"
+2025-12-08T08:54:09.703-03:00  INFO 43732 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-12-08T08:54:09.757-03:00  INFO 43732 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 49 ms. Found 3 JPA repository interfaces.
+2025-12-08T08:54:10.272-03:00  INFO 43732 --- [    Test worker] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+2025-12-08T08:54:10.282-03:00  INFO 43732 --- [    Test worker] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-12-08T08:54:10.282-03:00  INFO 43732 --- [    Test worker] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.20]
+2025-12-08T08:54:10.355-03:00  INFO 43732 --- [    Test worker] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-12-08T08:54:10.356-03:00  INFO 43732 --- [    Test worker] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1364 ms
 Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
-2025-12-08T08:40:56.254-03:00  INFO 14308 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-12-08T08:40:56.392-03:00  INFO 14308 --- [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@1b881f1f
-2025-12-08T08:40:56.393-03:00  INFO 14308 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-12-08T08:40:56.462-03:00  INFO 14308 --- [    Test worker] o.f.c.internal.license.VersionPrinter    : Flyway Community Edition 9.22.3 by Redgate
-2025-12-08T08:40:56.462-03:00  INFO 14308 --- [    Test worker] o.f.c.internal.license.VersionPrinter    : See release notes here: https://rd.gt/416ObMi
-2025-12-08T08:40:56.462-03:00  INFO 14308 --- [    Test worker] o.f.c.internal.license.VersionPrinter    : 
-2025-12-08T08:40:56.477-03:00  INFO 14308 --- [    Test worker] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://localhost:55314/test (PostgreSQL 16.11)
-2025-12-08T08:40:56.485-03:00  WARN 14308 --- [    Test worker] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: PostgreSQL 16.11 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 15.
-2025-12-08T08:40:56.504-03:00  INFO 14308 --- [    Test worker] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table "public"."flyway_schema_history" does not exist yet
-2025-12-08T08:40:56.506-03:00  INFO 14308 --- [    Test worker] o.f.core.internal.command.DbValidate     : Successfully validated 2 migrations (execution time 00:00.014s)
-2025-12-08T08:40:56.520-03:00  INFO 14308 --- [    Test worker] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table "public"."flyway_schema_history" ...
-2025-12-08T08:40:56.545-03:00  INFO 14308 --- [    Test worker] o.f.core.internal.command.DbMigrate      : Current version of schema "public": << Empty Schema >>
-2025-12-08T08:40:56.552-03:00  INFO 14308 --- [    Test worker] o.f.core.internal.command.DbMigrate      : Migrating schema "public" to version "1 - initial schema"
-2025-12-08T08:40:56.589-03:00  INFO 14308 --- [    Test worker] o.f.core.internal.command.DbMigrate      : Migrating schema "public" to version "2 - add workday table"
-2025-12-08T08:40:56.600-03:00  INFO 14308 --- [    Test worker] o.f.core.internal.command.DbMigrate      : Successfully applied 2 migrations to schema "public", now at version v2 (execution time 00:00.027s)
-2025-12-08T08:40:56.680-03:00  INFO 14308 --- [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-12-08T08:40:56.736-03:00  INFO 14308 --- [    Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.4.4.Final
-2025-12-08T08:40:56.768-03:00  INFO 14308 --- [    Test worker] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-12-08T08:40:56.936-03:00  INFO 14308 --- [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-12-08T08:40:57.602-03:00  INFO 14308 --- [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-12-08T08:40:57.630-03:00  INFO 14308 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-12-08T08:40:57.895-03:00  INFO 14308 --- [    Test worker] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
-2025-12-08T08:40:58.272-03:00  WARN 14308 --- [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-12-08T08:40:58.295-03:00  INFO 14308 --- [    Test worker] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
-2025-12-08T08:40:58.792-03:00  INFO 14308 --- [    Test worker] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring TestDispatcherServlet ''
-2025-12-08T08:40:58.792-03:00  INFO 14308 --- [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
-2025-12-08T08:40:58.797-03:00  INFO 14308 --- [    Test worker] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoint(s) beneath base path '/actuator'
-2025-12-08T08:40:58.813-03:00  INFO 14308 --- [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 21 ms
-2025-12-08T08:40:58.878-03:00  INFO 14308 --- [    Test worker] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 55335 (http) with context path ''
-2025-12-08T08:40:58.888-03:00  INFO 14308 --- [    Test worker] PublicDashboardControllerIntegrationTest : Started PublicDashboardControllerIntegrationTest in 4.386 seconds (process running for 7.986)
-2025-12-08T08:40:58.893-03:00 DEBUG 14308 --- [   scheduling-1] c.i.t.common.scheduling.ScheduledTasks   : Running scheduled job: checkForPreArrivalAlerts
+2025-12-08T08:54:10.554-03:00  INFO 43732 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-12-08T08:54:10.693-03:00  INFO 43732 --- [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@28100232
+2025-12-08T08:54:10.694-03:00  INFO 43732 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-12-08T08:54:10.751-03:00  INFO 43732 --- [    Test worker] o.f.c.internal.license.VersionPrinter    : Flyway Community Edition 9.22.3 by Redgate
+2025-12-08T08:54:10.751-03:00  INFO 43732 --- [    Test worker] o.f.c.internal.license.VersionPrinter    : See release notes here: https://rd.gt/416ObMi
+2025-12-08T08:54:10.752-03:00  INFO 43732 --- [    Test worker] o.f.c.internal.license.VersionPrinter    : 
+2025-12-08T08:54:10.768-03:00  INFO 43732 --- [    Test worker] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://localhost:56048/test (PostgreSQL 16.11)
+2025-12-08T08:54:10.775-03:00  WARN 43732 --- [    Test worker] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: PostgreSQL 16.11 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 15.
+2025-12-08T08:54:10.797-03:00  INFO 43732 --- [    Test worker] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table "public"."flyway_schema_history" does not exist yet
+2025-12-08T08:54:10.800-03:00  INFO 43732 --- [    Test worker] o.f.core.internal.command.DbValidate     : Successfully validated 2 migrations (execution time 00:00.015s)
+2025-12-08T08:54:10.815-03:00  INFO 43732 --- [    Test worker] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table "public"."flyway_schema_history" ...
+2025-12-08T08:54:10.845-03:00  INFO 43732 --- [    Test worker] o.f.core.internal.command.DbMigrate      : Current version of schema "public": << Empty Schema >>
+2025-12-08T08:54:10.853-03:00  INFO 43732 --- [    Test worker] o.f.core.internal.command.DbMigrate      : Migrating schema "public" to version "1 - initial schema"
+2025-12-08T08:54:10.894-03:00  INFO 43732 --- [    Test worker] o.f.core.internal.command.DbMigrate      : Migrating schema "public" to version "2 - add workday table"
+2025-12-08T08:54:10.907-03:00  INFO 43732 --- [    Test worker] o.f.core.internal.command.DbMigrate      : Successfully applied 2 migrations to schema "public", now at version v2 (execution time 00:00.031s)
+2025-12-08T08:54:10.993-03:00  INFO 43732 --- [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-12-08T08:54:11.052-03:00  INFO 43732 --- [    Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.4.4.Final
+2025-12-08T08:54:11.077-03:00  INFO 43732 --- [    Test worker] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-12-08T08:54:11.248-03:00  INFO 43732 --- [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-12-08T08:54:11.917-03:00  INFO 43732 --- [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-12-08T08:54:11.946-03:00  INFO 43732 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-12-08T08:54:12.186-03:00  INFO 43732 --- [    Test worker] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-12-08T08:54:12.582-03:00  WARN 43732 --- [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-12-08T08:54:12.615-03:00  INFO 43732 --- [    Test worker] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
+2025-12-08T08:54:13.153-03:00  INFO 43732 --- [    Test worker] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring TestDispatcherServlet ''
+2025-12-08T08:54:13.153-03:00  INFO 43732 --- [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2025-12-08T08:54:13.158-03:00  INFO 43732 --- [    Test worker] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoint(s) beneath base path '/actuator'
+2025-12-08T08:54:13.167-03:00  INFO 43732 --- [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 14 ms
+2025-12-08T08:54:13.227-03:00  INFO 43732 --- [    Test worker] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 56061 (http) with context path ''
+2025-12-08T08:54:13.237-03:00  INFO 43732 --- [    Test worker] PublicDashboardControllerIntegrationTest : Started PublicDashboardControllerIntegrationTest in 4.473 seconds (process running for 7.822)
+2025-12-08T08:54:13.244-03:00 DEBUG 43732 --- [   scheduling-1] c.i.t.common.scheduling.ScheduledTasks   : Running scheduled job: checkForPreArrivalAlerts
 Hibernate: 
     SELECT
         t.* 
@@ -94,7 +94,7 @@ Hibernate:
             status = 'PENDING'     ) t     
     WHERE
         t.rnk = ? 
-2025-12-08T08:40:59.022-03:00 DEBUG 14308 --- [   scheduling-1] c.i.t.common.scheduling.ScheduledTasks   : Running scheduled job: assignNextAvailableTicket
+2025-12-08T08:54:13.379-03:00 DEBUG 43732 --- [   scheduling-1] c.i.t.common.scheduling.ScheduledTasks   : Running scheduled job: assignNextAvailableTicket
 Hibernate: 
     select
         e1_0.id,

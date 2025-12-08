@@ -30,6 +30,11 @@ services:
     container_name: ticketero-app
     ports:
       - "8080:8080" # Maps the app's port 8080 to the host.
+    environment:
+      # Q-Insight: Override the DB_URL for container-to-container communication.
+      # Inside the Docker network, containers use service names as hostnames.
+      # 'localhost' would refer to the app container itself. We must use 'db'.
+      - DB_URL=jdbc:postgresql://db:5432/${DB_NAME}
     env_file:
       - .env # Loads environment variables from the .env file.
     depends_on:

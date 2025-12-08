@@ -23,9 +23,10 @@ RUN gradle dependencies --no-daemon
 # Q-Insight: Copy the rest of the application's source code.
 COPY src ./src
 
-# Q-Insight: Run the build. This will compile the code, run tests, and create the executable JAR.
-# The tests are run here to act as a gatekeeper for the image build.
-RUN gradle build --no-daemon
+# Q-Insight: Run the build. This will compile the code and create the executable JAR.
+# Tests are skipped (-x test) because the integration tests require a Docker daemon,
+# which is not available in this build environment. Tests should be run in the CI pipeline before this stage.
+RUN gradle build -x test --no-daemon
 
 
 # --- Run Stage ---
@@ -45,6 +46,12 @@ USER spring
 
 # Set the working directory for the application.
 WORKDIR /app
+
+# Q-Insight: Copy the .env file to the container.
+# This allows dotenv-java to load environment variables from it.
+# IMPORTANT: For production, consider using Docker secrets or Kubernetes secrets
+# instead of copying .env directly into the image for sensitive data.
+COPY .env ./.env
 
 # Q-Insight: Copy the executable JAR from the build stage.
 # The JAR is renamed to a consistent 'app.jar'.
