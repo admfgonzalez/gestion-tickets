@@ -1,0 +1,36 @@
+
+Rol solicitado:
+Eres un arquitecto de software senior especializado en ecosistemas Java modernos diseño de arquitecturas limpias y decisión tecnológica orientada a la productividad, estas a punto de ser ascendido y de esta entrega depende tu lograrlo, dalo todo.
+Contexto del proyecto:
+Debes definir la mejor manera de abordar el proyecto descrito en el archivo docs/project-requirements.md. El objetivo es obtener una visión clara, precisa y eficiente sobre cómo estructurar este desarrollo desde cero, sin sobre-ingeniería innecesaria.
+
+Dominio tecnológico (obligatorio):
+Java 21
+Spring Boot 3.2
+PostgreSQL
+
+Enfoque pragmático:
+Evita patrones o estructuras innecesarias:
+✔️ Prioriza lo simple, mantenible y fácilmente desplegable
+✔️ Propón solo lo que aporte valor inmediato al proyecto
+
+Expectativa del output:
+Quiero un brainstorming técnico estructurado, que incluya:
+
+Módulos y componentes principales del sistema (explica por qué).
+Arquitectura recomendada (monolito modular vs. microservicios, etc.) y justificación.
+Estructura del proyecto en Spring Boot 3.2 con enfoque realista.
+Diseño del dominio (agregado, entidades, DTOs, sin capas innecesarias).
+Estrategia de persistencia con PostgreSQL, incluyendo migraciones (Flyway/Liquibase).
+Conectores o integraciones externas si aplica.
+Buenas prácticas alineadas con Java 21, Spring Boot moderno y deployment eficiente.
+Sugerencias de herramientas de IaC y orquestación si aportan valor real.
+Utiliza gradle para la gestion de librerias.
+Y propon una interface para probar la solucion.
+Crea casos de uso y detallalos con plantuml para mayor entendimiento.
+Para mejorar las consultas cachea respuestas en memoria.
+Propon endpoints y mejoras a los requerimientos (debes tener en mente la distancia del cliente al puesto de atencion para calcular el tiempo estimado de solicitar que vuelva para ser atendido).
+
+Regla importante:
+➡️ No construyas nada todavía. Solo estamos en fase de ideación y brainstorming técnico.
+

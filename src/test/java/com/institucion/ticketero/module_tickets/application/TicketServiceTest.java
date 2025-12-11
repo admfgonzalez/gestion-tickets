@@ -8,7 +8,8 @@ import com.institucion.ticketero.module_tickets.api.CreateTicketResponse;
 import com.institucion.ticketero.module_tickets.domain.Ticket;
 import com.institucion.ticketero.module_tickets.domain.TicketStatus;
 import com.institucion.ticketero.module_tickets.infrastructure.TicketRepository;
-import org.junit.jupiter.api.BeforeEach;
+import com.institucion.ticketero.module_workday.application.WorkdayService;
+import com.institucion.ticketero.module_workday.domain.Workday;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,6 +37,9 @@ class TicketServiceTest {
     @Mock
     private QueueService queueService;
 
+    @Mock
+    private WorkdayService workdayService; // Mock WorkdayService
+
     @InjectMocks
     private TicketService ticketService;
 
@@ -43,15 +48,26 @@ class TicketServiceTest {
         // Given
         CreateTicketRequest request = new CreateTicketRequest("12345678-9", AttentionType.CAJA, "12345");
 
+        Workday mockWorkday = new Workday();
+        mockWorkday.setId(UUID.randomUUID());
+        mockWorkday.setStartTime(LocalDateTime.now().minusHours(1));
+        when(workdayService.getCurrentActiveWorkday()).thenReturn(mockWorkday);
+
         Ticket savedTicket = new Ticket();
         savedTicket.setId(UUID.randomUUID());
         savedTicket.setTicketNumber("CA-1");
         savedTicket.setAttentionType(AttentionType.CAJA);
         savedTicket.setStatus(TicketStatus.PENDING);
         savedTicket.setCreatedAt(LocalDateTime.now());
+        savedTicket.setWorkday(mockWorkday); // Set the mocked workday on the ticket
+
+        // Mock for generateTicketNumber
+        when(ticketRepository.countByAttentionTypeAndWorkdayId(any(AttentionType.class), any(UUID.class))).thenReturn(0L);
 
         when(ticketRepository.save(any(Ticket.class))).thenReturn(savedTicket);
-        when(ticketRepository.countByAttentionTypeAndStatusAndCreatedAtBefore(any(), any(), any())).thenReturn(4L);
+        // Mock for position calculation
+        when(ticketRepository.countByAttentionTypeAndWorkdayIdAndStatusAndCreatedAtBefore(
+                any(AttentionType.class), any(UUID.class), any(TicketStatus.class), any(LocalDateTime.class))).thenReturn(4L);
         when(queueService.calculateAverageWaitTime(any(), any(Long.class))).thenReturn(20L);
 
         // When

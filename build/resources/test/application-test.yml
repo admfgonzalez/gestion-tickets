@@ -1,6 +1,10 @@
 server:
   port: 8081
 
+telegram:
+  bot:
+    token: test-telegram-token
+
 logging:
   level:
     org.springframework: INFO

@@ -66,6 +66,23 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID> {
     long countByAttentionTypeAndCreatedAtAfter(AttentionType attentionType, LocalDateTime startTime);
 
     /**
+     * Q-Insight: Counts tickets for a specific attention type and workday.
+     * This is used for generating sequential ticket numbers unique per workday.
+     * @param attentionType The type of attention.
+     * @param workdayId The ID of the workday.
+     * @return The count of matching tickets.
+     */
+    long countByAttentionTypeAndWorkdayId(AttentionType attentionType, UUID workdayId);
+
+    /**
+     * Q-Insight: Counts tickets by status, attention type, workday, and creation time.
+     * A crucial query for calculating a customer's position in a queue, now scoped per workday.
+     * It counts how many tickets of the same attention type and workday were created before the given ticket's creation time.
+     */
+    long countByAttentionTypeAndWorkdayIdAndStatusAndCreatedAtBefore(
+            AttentionType attentionType, UUID workdayId, TicketStatus status, LocalDateTime createdAt);
+
+    /**
      * Q-Insight: Finds tickets that require a pre-arrival notification.
      * This query selects tickets that are 'nth' in line, triggering the "pre-aviso" notification (RF-002).
      * The native query is complex because it needs to calculate the rank of tickets within each queue type.

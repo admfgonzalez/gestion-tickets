@@ -48,8 +48,8 @@ public class DashboardService {
      */
     @Transactional(readOnly = true)
     public DashboardMetricsResponse getDashboardMetrics() {
-        Optional<com.institucion.ticketero.module_workday.domain.Workday> activeWorkday = workdayService.getActiveWorkday();
-        long totalTickets = activeWorkday.map(workday -> ticketRepository.countByCreatedAtAfter(workday.getStartTime())).orElse(0L);
+        com.institucion.ticketero.module_workday.domain.Workday activeWorkday = workdayService.getCurrentActiveWorkday();
+        long totalTickets = ticketRepository.countByCreatedAtAfter(activeWorkday.getStartTime());
         
         Map<String, Long> ticketsByStatus = Arrays.stream(TicketStatus.values())
                 .collect(Collectors.toMap(
@@ -57,7 +57,7 @@ public class DashboardService {
                         ticketRepository::countByStatus
                 ));
 
-        List<QueueStatusResponse> queueDetails = queueService.getAllQueueStatus(activeWorkday.map(com.institucion.ticketero.module_workday.domain.Workday::getStartTime));
+        List<QueueStatusResponse> queueDetails = queueService.getAllQueueStatus(Optional.of(activeWorkday.getStartTime()));
         List<ExecutiveStatusResponse> executiveDetails = executiveRepository.findAll().stream()
                 .map(this::mapToExecutiveStatusResponse)
                 .collect(Collectors.toList());

@@ -2,17 +2,16 @@ package com.institucion.ticketero.module_workday.api;
 
 import com.institucion.ticketero.module_workday.application.WorkdayService;
 import com.institucion.ticketero.module_workday.domain.Workday;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/workday")
+@RequestMapping("/api/workdays")
 public class WorkdayController {
 
     private final WorkdayService workdayService;
@@ -21,46 +20,27 @@ public class WorkdayController {
         this.workdayService = workdayService;
     }
 
-    @PostMapping("/start")
-    public ResponseEntity<Workday> startNewDay() {
-        try {
-            return ResponseEntity.ok(workdayService.startNewDay());
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(409).build(); // 409 Conflict
-        }
+    @PostMapping("/open")
+    public ResponseEntity<WorkdayResponse> openWorkday() {
+        Workday newWorkday = workdayService.openNewWorkday();
+        return new ResponseEntity<>(new WorkdayResponse(newWorkday.getId(), newWorkday.getStartTime(), newWorkday.getEndTime(), newWorkday.getStatus()), HttpStatus.CREATED);
     }
 
-    @PostMapping("/end")
-    public ResponseEntity<Workday> endCurrentDay() {
-        try {
-            return ResponseEntity.ok(workdayService.endCurrentDay());
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(409).build(); // 409 Conflict
-        }
+    @PutMapping("/{id}/close")
+    public ResponseEntity<WorkdayResponse> closeWorkday(@PathVariable UUID id) {
+        Workday closedWorkday = workdayService.closeWorkday(id);
+        return ResponseEntity.ok(new WorkdayResponse(closedWorkday.getId(), closedWorkday.getStartTime(), closedWorkday.getEndTime(), closedWorkday.getStatus()));
     }
 
-    @GetMapping("/active")
-    public ResponseEntity<Workday> getActiveWorkday() {
-        return workdayService.getActiveWorkday()
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.noContent().build());
+    @GetMapping("/current")
+    public ResponseEntity<WorkdayResponse> getCurrentActiveWorkday() {
+        Workday currentWorkday = workdayService.getCurrentActiveWorkday();
+        return ResponseEntity.ok(new WorkdayResponse(currentWorkday.getId(), currentWorkday.getStartTime(), currentWorkday.getEndTime(), currentWorkday.getStatus()));
     }
 
-    @GetMapping("/history")
-    public ResponseEntity<List<Workday>> getWorkdayHistory() {
-        return ResponseEntity.ok(workdayService.getWorkdayHistory());
-    }
-
-    @GetMapping("/{id}/report")
-    public ResponseEntity<byte[]> getWorkdayReport(@PathVariable UUID id) {
-        try {
-            byte[] pdfContents = workdayService.generateWorkdayReport(id);
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_PDF);
-            headers.setContentDispositionFormData("attachment", "reporte-jornada-" + id + ".pdf");
-            return ResponseEntity.ok().headers(headers).body(pdfContents);
-        } catch (IOException e) {
-            return ResponseEntity.internalServerError().build();
-        }
+    @GetMapping("/{id}")
+    public ResponseEntity<WorkdayResponse> getWorkdayById(@PathVariable UUID id) {
+        Workday workday = workdayService.getWorkdayById(id);
+        return ResponseEntity.ok(new WorkdayResponse(workday.getId(), workday.getStartTime(), workday.getEndTime(), workday.getStatus()));
     }
 }

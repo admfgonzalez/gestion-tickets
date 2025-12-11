@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2025-12-08T11:54:16" hostname="PANCHOX" time="0.25">
+<testsuite name="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2025-12-08T14:29:37" hostname="PANCHOX" time="0.545">
   <properties/>
-  <testcase name="updateExecutive_whenExecutiveDoesNotExist_shouldThrowResourceNotFoundException()" classname="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" time="0.222"/>
-  <testcase name="getExecutiveById_whenExecutiveExists_shouldReturnExecutiveDetails()" classname="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" time="0.003"/>
-  <testcase name="deleteExecutive_whenExecutiveDoesNotExist_shouldThrowResourceNotFoundException()" classname="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" time="0.003"/>
-  <testcase name="updateSupportedAttentionTypes_whenExecutiveDoesNotExist_shouldThrowResourceNotFoundException()" classname="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" time="0.003"/>
-  <testcase name="getExecutiveById_whenExecutiveDoesNotExist_shouldThrowResourceNotFoundException()" classname="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" time="0.002"/>
-  <testcase name="deleteExecutive_whenExecutiveExists_shouldDeleteExecutive()" classname="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" time="0.004"/>
+  <testcase name="updateExecutive_whenExecutiveDoesNotExist_shouldThrowResourceNotFoundException()" classname="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" time="0.518"/>
+  <testcase name="getExecutiveById_whenExecutiveExists_shouldReturnExecutiveDetails()" classname="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" time="0.005"/>
+  <testcase name="deleteExecutive_whenExecutiveDoesNotExist_shouldThrowResourceNotFoundException()" classname="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" time="0.002"/>
+  <testcase name="updateSupportedAttentionTypes_whenExecutiveDoesNotExist_shouldThrowResourceNotFoundException()" classname="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" time="0.002"/>
+  <testcase name="getExecutiveById_whenExecutiveDoesNotExist_shouldThrowResourceNotFoundException()" classname="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" time="0.001"/>
+  <testcase name="deleteExecutive_whenExecutiveExists_shouldDeleteExecutive()" classname="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" time="0.002"/>
   <testcase name="updateExecutive_whenExecutiveExists_shouldUpdateAndReturnExecutiveDetails()" classname="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" time="0.003"/>
   <testcase name="getAllExecutives_shouldReturnListOfExecutives()" classname="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" time="0.002"/>
-  <testcase name="createExecutive_shouldReturnExecutiveDetails()" classname="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" time="0.002"/>
-  <testcase name="updateSupportedAttentionTypes_whenExecutiveExists_shouldUpdateTypes()" classname="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" time="0.002"/>
+  <testcase name="createExecutive_shouldReturnExecutiveDetails()" classname="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" time="0.003"/>
+  <testcase name="updateSupportedAttentionTypes_whenExecutiveExists_shouldUpdateTypes()" classname="com.institucion.ticketero.module_executives.application.ExecutiveServiceTest" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
+  <system-err><![CDATA[WARNING: A Java agent has been loaded dynamically (C:\Users\fgonzalez\scoop\apps\gradle\current\.gradle\caches\modules-2\files-2.1\net.bytebuddy\byte-buddy-agent\1.14.13\979ce25f7d3096a2e82214ba7dc972a05ce7a171\byte-buddy-agent-1.14.13.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+]]></system-err>
 </testsuite>

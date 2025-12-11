@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.institucion.ticketero.module_tickets.application.TicketServiceTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2025-12-08T11:54:17" hostname="PANCHOX" time="0.08">
+<testsuite name="com.institucion.ticketero.module_tickets.application.TicketServiceTest" tests="1" skipped="1" failures="0" errors="0" timestamp="2025-12-08T14:29:38" hostname="PANCHOX" time="36.152">
   <properties/>
-  <testcase name="testCreateTicket()" classname="com.institucion.ticketero.module_tickets.application.TicketServiceTest" time="0.08"/>
+  <testcase name="testCreateTicket()" classname="com.institucion.ticketero.module_tickets.application.TicketServiceTest" time="36.152">
+    <skipped/>
+  </testcase>
   <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
+  <system-err><![CDATA[Exception in thread "testcontainers-ryuk" java.lang.OutOfMemoryError: Java heap space
+	at org.mockito.internal.util.concurrent.WeakConcurrentMap.containsKey(WeakConcurrentMap.java:81)
+	at org.mockito.internal.creation.bytebuddy.MockMethodAdvice.isMock(MockMethodAdvice.java:166)
+	at org.mockito.internal.creation.bytebuddy.MockMethodAdvice.isMocked(MockMethodAdvice.java:171)
+	at java.base/java.lang.Object.wait(Object.java:364)
+	at org.testcontainers.utility.RyukResourceReaper.lambda$null$1(RyukResourceReaper.java:115)
+	at org.testcontainers.utility.RyukResourceReaper$$Lambda/0x000002202c2d29a8.run(Unknown Source)
+	at org.rnorth.ducttape.ratelimits.RateLimiter.doWhenReady(RateLimiter.java:27)
+	at org.testcontainers.utility.RyukResourceReaper.lambda$maybeStart$2(RyukResourceReaper.java:101)
+	at org.testcontainers.utility.RyukResourceReaper$$Lambda/0x000002202c2d2780.run(Unknown Source)
+	at java.base/java.lang.Thread.runWith(Thread.java:1596)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+]]></system-err>
 </testsuite>

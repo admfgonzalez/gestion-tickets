@@ -1,5 +1,6 @@
 package com.institucion.ticketero.module_tickets.application;
 
+import com.institucion.ticketero.common.exceptions.ResourceNotFoundException;
 import com.institucion.ticketero.module_executives.domain.Executive;
 import com.institucion.ticketero.module_executives.domain.ExecutiveStatus;
 import com.institucion.ticketero.module_executives.infrastructure.ExecutiveRepository;
@@ -11,12 +12,16 @@ import com.institucion.ticketero.module_tickets.api.TicketStatusResponse;
 import com.institucion.ticketero.module_tickets.domain.Ticket;
 import com.institucion.ticketero.module_tickets.domain.TicketStatus;
 import com.institucion.ticketero.module_tickets.infrastructure.TicketRepository;
-import jakarta.transaction.Transactional;
+import com.institucion.ticketero.module_workday.application.WorkdayService;
+import com.institucion.ticketero.module_workday.domain.Workday;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -31,37 +36,66 @@ public class TicketService {
     private final ExecutiveRepository executiveRepository;
     private final NotificationService notificationService;
     private final QueueService queueService;
+    private final WorkdayService workdayService; // Inject WorkdayService
+    private static final int MAX_RETRIES = 5;
 
-    public TicketService(TicketRepository ticketRepository, ExecutiveRepository executiveRepository, NotificationService notificationService, QueueService queueService) {
+    public TicketService(TicketRepository ticketRepository, ExecutiveRepository executiveRepository,
+                         NotificationService notificationService, QueueService queueService,
+                         WorkdayService workdayService) { // Add WorkdayService to constructor
         this.ticketRepository = ticketRepository;
         this.executiveRepository = executiveRepository;
         this.notificationService = notificationService;
         this.queueService = queueService;
+        this.workdayService = workdayService;
     }
 
     /**
      * Q-Insight: Creates a new ticket.
      * This method implements the RF-001 use case. It's marked @Transactional to ensure all database
      * operations within it either succeed or fail together, maintaining data consistency.
+     * It now includes a retry mechanism to handle race conditions during ticket number generation,
+     * considering the active workday for uniqueness.
      * @param request The DTO containing the new ticket data.
      * @return A DTO with the details of the created ticket.
      */
     @Transactional
     public CreateTicketResponse createTicket(CreateTicketRequest request) {
+        Workday currentWorkday = workdayService.getCurrentActiveWorkday();
+
         Ticket ticket = new Ticket();
         ticket.setCustomerId(request.customerId());
         ticket.setTelegramChatId(request.telegramChatId());
         ticket.setAttentionType(request.attentionType());
         ticket.setStatus(TicketStatus.PENDING);
-        
-        // The ticket number is now generated transactionally within this method.
-        String ticketNumber = generateTicketNumber(request.attentionType());
-        ticket.setTicketNumber(ticketNumber);
+        ticket.setWorkday(currentWorkday); // Associate ticket with the current workday
 
-        Ticket savedTicket = ticketRepository.save(ticket);
+        Ticket savedTicket = null;
+        int retries = 0;
 
-        long position = ticketRepository.countByAttentionTypeAndStatusAndCreatedAtBefore(
-                savedTicket.getAttentionType(), TicketStatus.PENDING, savedTicket.getCreatedAt()) + 1;
+        while (savedTicket == null && retries < MAX_RETRIES) {
+            try {
+                String ticketNumber = generateTicketNumber(request.attentionType(), currentWorkday.getId()); // Pass workday ID
+                ticket.setTicketNumber(ticketNumber);
+                
+                savedTicket = ticketRepository.saveAndFlush(ticket);
+
+            } catch (DataIntegrityViolationException e) {
+                retries++;
+                try {
+                    Thread.sleep(50 + new Random().nextInt(50));
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException("Ticket creation interrupted.", ie);
+                }
+            }
+        }
+
+        if (savedTicket == null) {
+            throw new RuntimeException("Failed to create a unique ticket after " + MAX_RETRIES + " retries.");
+        }
+
+        long position = ticketRepository.countByAttentionTypeAndWorkdayIdAndStatusAndCreatedAtBefore( // Use new method
+                savedTicket.getAttentionType(), savedTicket.getWorkday().getId(), TicketStatus.PENDING, savedTicket.getCreatedAt()) + 1;
 
         long estimatedWaitTime = queueService.calculateAverageWaitTime(savedTicket.getAttentionType(), position);
 
@@ -78,14 +112,14 @@ public class TicketService {
      */
     public TicketStatusResponse getTicketStatus(String ticketNumber) {
         Ticket ticket = ticketRepository.findByTicketNumber(ticketNumber)
-                .orElseThrow(() -> new com.institucion.ticketero.common.exceptions.ResourceNotFoundException("Ticket not found with number: " + ticketNumber));
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket not found with number: " + ticketNumber));
 
         long position = 0;
         long estimatedWaitTime = 0;
 
         if (ticket.getStatus() == TicketStatus.PENDING) {
-            position = ticketRepository.countByAttentionTypeAndStatusAndCreatedAtBefore(
-                    ticket.getAttentionType(), TicketStatus.PENDING, ticket.getCreatedAt()) + 1;
+            position = ticketRepository.countByAttentionTypeAndWorkdayIdAndStatusAndCreatedAtBefore( // Use new method
+                    ticket.getAttentionType(), ticket.getWorkday().getId(), TicketStatus.PENDING, ticket.getCreatedAt()) + 1;
             estimatedWaitTime = queueService.calculateAverageWaitTime(ticket.getAttentionType(), position);
         }
 
@@ -104,13 +138,14 @@ public class TicketService {
     }
     
     /**
-     * Q-Insight: Generates a unique, human-readable ticket number that is unique per day, per attention type.
-     * Example: CA-1, CA-2, PB-1, PB-2. The counters reset each day.
+     * Q-Insight: Generates a unique, human-readable ticket number that is unique per attention type and workday.
+     * Example: CA-1, CA-2, PB-1, PB-2 (within a specific workday). The counters reset each workday.
      * This logic is robust against application restarts and multiple instances.
      * @param attentionType The type of attention for the ticket.
+     * @param workdayId The ID of the current active workday.
      * @return The generated ticket number string.
      */
-    private String generateTicketNumber(com.institucion.ticketero.module_queues.domain.AttentionType attentionType) {
+    private String generateTicketNumber(com.institucion.ticketero.module_queues.domain.AttentionType attentionType, UUID workdayId) {
         String prefix = switch (attentionType) {
             case CAJA -> "CA";
             case PERSONAL_BANKER -> "PB";
@@ -118,9 +153,8 @@ public class TicketService {
             case GERENCIA -> "GE";
         };
         
-        // Get the count of tickets of this type created today and add 1.
-        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
-        long sequenceNumber = ticketRepository.countByAttentionTypeAndCreatedAtAfter(attentionType, startOfDay) + 1;
+        // Get the count of tickets of this type created for the current workday and add 1.
+        long sequenceNumber = ticketRepository.countByAttentionTypeAndWorkdayId(attentionType, workdayId) + 1;
         
         return prefix + "-" + sequenceNumber;
     }
