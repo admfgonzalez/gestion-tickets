@@ -29,7 +29,7 @@ public class ScheduledTasks {
     private final NotificationService notificationService;
 
     // A set to keep track of tickets that have already been notified to avoid sending duplicate alerts.
-    private final Set<UUID> notifiedTickets = ConcurrentHashMap.newKeySet();
+    private final Set<Long> notifiedTickets = ConcurrentHashMap.newKeySet();
 
     public ScheduledTasks(TicketService ticketService, TicketRepository ticketRepository, NotificationService notificationService) {
         this.ticketService = ticketService;

@@ -1,5 +1,6 @@
 package com.institucion.ticketero.module_workday.application;
 
+import com.institucion.ticketero.common.exceptions.ResourceNotFoundException;
 import com.institucion.ticketero.module_workday.domain.Workday;
 import com.institucion.ticketero.module_workday.domain.WorkdayStatus;
 import com.institucion.ticketero.module_workday.infrastructure.WorkdayRepository;
@@ -12,7 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -28,11 +28,11 @@ class WorkdayServiceTest {
     private WorkdayService workdayService;
 
     private Workday activeWorkday;
-    private UUID activeWorkdayId;
+    private Long activeWorkdayId;
 
     @BeforeEach
     void setUp() {
-        activeWorkdayId = UUID.randomUUID();
+        activeWorkdayId = 1L;
         activeWorkday = new Workday(LocalDateTime.now().minusHours(1), null, WorkdayStatus.OPEN);
         activeWorkday.setId(activeWorkdayId);
     }
@@ -42,7 +42,7 @@ class WorkdayServiceTest {
         when(workdayRepository.findByStatus(WorkdayStatus.OPEN)).thenReturn(Optional.empty());
         when(workdayRepository.save(any(Workday.class))).thenAnswer(invocation -> {
             Workday savedWorkday = invocation.getArgument(0);
-            savedWorkday.setId(UUID.randomUUID());
+            savedWorkday.setId(2L);
             return savedWorkday;
         });
 
@@ -61,7 +61,7 @@ class WorkdayServiceTest {
         when(workdayRepository.save(any(Workday.class))).thenAnswer(invocation -> {
             Workday savedWorkday = invocation.getArgument(0);
             if (savedWorkday.getId() == null) {
-                savedWorkday.setId(UUID.randomUUID());
+                savedWorkday.setId(2L);
             }
             return savedWorkday;
         });
@@ -118,10 +118,10 @@ class WorkdayServiceTest {
 
     @Test
     void testGetCurrentActiveWorkday_notFound_opensNew() {
-        when(workdayRepository.findByStatus(WorkdayStatus.OPEN)).thenReturn(Optional.empty());
+        when(workdayRepository.findByStatus(WorkdayStatus.OPEN)).thenReturn(Optional.empty()).thenReturn(Optional.empty());
         when(workdayRepository.save(any(Workday.class))).thenAnswer(invocation -> {
             Workday savedWorkday = invocation.getArgument(0);
-            savedWorkday.setId(UUID.randomUUID());
+            savedWorkday.setId(2L);
             return savedWorkday;
         });
 
@@ -130,7 +130,7 @@ class WorkdayServiceTest {
         assertNotNull(newWorkday);
         assertNotNull(newWorkday.getId());
         assertEquals(WorkdayStatus.OPEN, newWorkday.getStatus());
-        verify(workdayRepository, times(1)).findByStatus(WorkdayStatus.OPEN);
+        verify(workdayRepository, times(2)).findByStatus(WorkdayStatus.OPEN);
         verify(workdayRepository, times(1)).save(any(Workday.class));
     }
 
@@ -149,10 +149,9 @@ class WorkdayServiceTest {
     void testGetWorkdayById_notFound() {
         when(workdayRepository.findById(activeWorkdayId)).thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () ->
+        assertThrows(ResourceNotFoundException.class, () ->
                 workdayService.getWorkdayById(activeWorkdayId));
 
-        assertEquals("Workday not found with id: " + activeWorkdayId, exception.getMessage());
         verify(workdayRepository, times(1)).findById(activeWorkdayId);
     }
 }

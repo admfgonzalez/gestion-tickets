@@ -10,16 +10,20 @@ import jakarta.validation.constraints.NotNull;
  * It uses Jakarta Bean Validation annotations (@NotBlank, @NotNull) for automatic input validation at the controller level.
  * Using a record provides immutability, conciseness, and clear intent for data transfer.
  *
- * @param customerId The customer's unique identifier (e.g., RUT).
+ * @param nationalId The customer's unique identifier (e.g., RUT).
  * @param attentionType The desired type of service (e.g., CAJA).
- * @param telegramChatId Optional Telegram chat ID for notifications.
+ * @param telefono Optional phone number for notifications.
+ * @param branchOffice The branch office where the ticket is being created.
  */
 public record CreateTicketRequest(
-    @NotBlank(message = "Customer ID cannot be blank.")
-    String customerId,
+    @NotBlank(message = "National ID cannot be blank.")
+    String nationalId,
 
     @NotNull(message = "Attention type must be specified.")
     AttentionType attentionType,
 
-    String telegramChatId
+    String telefono,
+    
+    @NotBlank(message = "Branch office cannot be blank.")
+    String branchOffice
 ) {}

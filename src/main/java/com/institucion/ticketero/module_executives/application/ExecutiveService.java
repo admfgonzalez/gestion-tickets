@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,14 +41,14 @@ public class ExecutiveService {
                 .collect(Collectors.toList());
     }
 
-    public ExecutiveDetailsResponse getExecutiveById(UUID executiveId) {
+    public ExecutiveDetailsResponse getExecutiveById(Long executiveId) {
         Executive executive = executiveRepository.findById(executiveId)
                 .orElseThrow(() -> new ResourceNotFoundException("Executive not found with ID: " + executiveId));
         return mapToExecutiveDetailsResponse(executive);
     }
 
     @Transactional
-    public ExecutiveDetailsResponse updateExecutive(UUID executiveId, UpdateExecutiveRequest request) {
+    public ExecutiveDetailsResponse updateExecutive(Long executiveId, UpdateExecutiveRequest request) {
         Executive executive = executiveRepository.findById(executiveId)
                 .orElseThrow(() -> new ResourceNotFoundException("Executive not found with ID: " + executiveId));
         
@@ -62,7 +61,7 @@ public class ExecutiveService {
     }
 
     @Transactional
-    public void deleteExecutive(UUID executiveId) {
+    public void deleteExecutive(Long executiveId) {
         if (!executiveRepository.existsById(executiveId)) {
             throw new ResourceNotFoundException("Executive not found with ID: " + executiveId);
         }
@@ -70,7 +69,7 @@ public class ExecutiveService {
     }
 
     @Transactional
-    public void updateSupportedAttentionTypes(UUID executiveId, List<AttentionType> attentionTypes) {
+    public void updateSupportedAttentionTypes(Long executiveId, List<AttentionType> attentionTypes) {
         Executive executive = executiveRepository.findById(executiveId)
                 .orElseThrow(() -> new ResourceNotFoundException("Executive not found with ID: " + executiveId));
         

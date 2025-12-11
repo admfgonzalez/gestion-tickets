@@ -36,6 +36,10 @@ spring:
 telegram:
   bot:
     token: ${TELEGRAM_BOT_TOKEN:8425684037:AAHi-7WVm-aFpW9l80-tY8ukz3cTN1jwlR0}
+    username: ${TELEGRAM_BOT_USERNAME:YourBotUsername}
+    welcome:
+      message: "¡Hola! Soy el bot de turnos. Para poderte notificar, necesito tu ID de chat. Tu ID es: `%d`. Por favor, cópialo y pégalo en la aplicación."
+
 
 # Q-Insight: Actuator Configuration
 # Exposes endpoints for monitoring and management.

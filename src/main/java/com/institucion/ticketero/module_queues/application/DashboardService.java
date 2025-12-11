@@ -54,7 +54,7 @@ public class DashboardService {
         Map<String, Long> ticketsByStatus = Arrays.stream(TicketStatus.values())
                 .collect(Collectors.toMap(
                         Enum::name,
-                        ticketRepository::countByStatus
+                        status -> ticketRepository.countByStatusAndWorkdayId(status, activeWorkday.getId())
                 ));
 
         List<QueueStatusResponse> queueDetails = queueService.getAllQueueStatus(Optional.of(activeWorkday.getStartTime()));
@@ -66,7 +66,7 @@ public class DashboardService {
     }
 
     private ExecutiveStatusResponse mapToExecutiveStatusResponse(Executive executive) {
-        String currentTicketNumber = ticketRepository.findByExecutiveIdAndStatus(executive.getId(), TicketStatus.ATTENDING)
+        String currentTicketNumber = ticketRepository.findByExecutiveIdAndStatus(executive.getId(), TicketStatus.ATENDIENDO)
                 .stream()
                 .map(Ticket::getTicketNumber)
                 .findFirst()

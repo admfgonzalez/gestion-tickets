@@ -9,20 +9,30 @@ public enum TicketStatus {
     /**
      * The ticket has been created and is waiting in a queue.
      */
-    PENDING,
+    EN_ESPERA,
+
+    /**
+     * The ticket is about to be attended.
+     */
+    PROXIMO,
 
     /**
      * The ticket has been assigned to an executive and is currently being served.
      */
-    ATTENDING,
+    ATENDIENDO,
 
     /**
      * The customer has been served and the ticket is closed.
      */
-    CLOSED,
+    COMPLETADO,
 
     /**
      * The ticket was cancelled either by the system or the user.
      */
-    CANCELLED
+    CANCELADO,
+
+    /**
+     * The customer did not show up when called.
+     */
+    NO_ATENDIDO
 }

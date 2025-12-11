@@ -32,10 +32,8 @@ class QueueServiceTest {
     @Test
     void getAllQueueStatus_shouldReturnStatusForAllQueues() {
         LocalDateTime startTime = LocalDateTime.now();
-        when(ticketRepository.countByAttentionTypeAndStatusAndCreatedAtBefore(eq(AttentionType.CAJA), eq(TicketStatus.PENDING), any())).thenReturn(5L);
-        when(ticketRepository.countByAttentionTypeAndStatusAndCreatedAtBefore(eq(AttentionType.PERSONAL_BANKER), eq(TicketStatus.PENDING), any())).thenReturn(2L);
-        when(ticketRepository.countByAttentionTypeAndStatusAndCreatedAtBefore(eq(AttentionType.EMPRESAS), eq(TicketStatus.PENDING), any())).thenReturn(0L);
-        when(ticketRepository.countByAttentionTypeAndStatusAndCreatedAtBefore(eq(AttentionType.GERENCIA), eq(TicketStatus.PENDING), any())).thenReturn(1L);
+        when(ticketRepository.countByStatus(eq(TicketStatus.EN_ESPERA))).thenReturn(5L);
+        when(ticketRepository.countByStatus(eq(TicketStatus.PROXIMO))).thenReturn(2L);
 
         List<QueueStatusResponse> responses = queueService.getAllQueueStatus(Optional.of(startTime));
 
@@ -49,7 +47,8 @@ class QueueServiceTest {
         long waitingCustomers = 5;
         long expectedWaitTime = waitingCustomers * attentionType.getAverageServiceTimeMinutes();
 
-        when(ticketRepository.countByAttentionTypeAndStatusAndCreatedAtBefore(eq(attentionType), eq(TicketStatus.PENDING), any())).thenReturn(waitingCustomers);
+        when(ticketRepository.countByStatus(eq(TicketStatus.EN_ESPERA))).thenReturn(3L);
+        when(ticketRepository.countByStatus(eq(TicketStatus.PROXIMO))).thenReturn(2L);
         
         QueueStatusResponse response = queueService.getQueueStatus(attentionType, Optional.of(startTime));
         

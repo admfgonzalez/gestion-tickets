@@ -25,7 +25,7 @@ public class PublicDashboardService {
      */
     public List<NowServingTicket> getNowServing() {
         return ticketRepository
-                .findAllByStatusOrderByAttendedAtDesc(TicketStatus.ATTENDING)
+                .findAllByStatusOrderByAttendedAtDesc(TicketStatus.ATENDIENDO)
                 .stream()
                 .map(ticket -> new NowServingTicket(
                         ticket.getTicketNumber(),

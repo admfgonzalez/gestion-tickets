@@ -4,10 +4,9 @@ import com.institucion.ticketero.module_executives.domain.ExecutiveStatus;
 import com.institucion.ticketero.module_queues.domain.AttentionType;
 
 import java.util.Set;
-import java.util.UUID;
 
 public record ExecutiveDetailsResponse(
-    UUID id,
+    Long id,
     String fullName,
     String module,
     ExecutiveStatus status,

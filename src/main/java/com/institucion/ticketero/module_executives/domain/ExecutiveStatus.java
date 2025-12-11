@@ -14,5 +14,10 @@ public enum ExecutiveStatus {
     /**
      * The executive is currently serving a customer.
      */
-    BUSY
+    BUSY,
+
+    /**
+     * The executive is not available for assignment (e.g., on a break).
+     */
+    OFFLINE
 }

@@ -45,9 +45,7 @@ public class QueueService {
      * @return A DTO with the metrics for the requested queue.
      */
     public QueueStatusResponse getQueueStatus(AttentionType attentionType, Optional<LocalDateTime> workdayStartTime) {
-        LocalDateTime filterStartTime = workdayStartTime.orElse(java.time.LocalDate.now().atStartOfDay());
-
-        long waitingCustomers = ticketRepository.countByAttentionTypeAndStatusAndCreatedAtBefore(attentionType, TicketStatus.PENDING, filterStartTime);
+        long waitingCustomers = ticketRepository.countByStatus(TicketStatus.EN_ESPERA) + ticketRepository.countByStatus(TicketStatus.PROXIMO);
         long averageWaitTime = calculateAverageWaitTime(attentionType, waitingCustomers);
         return new QueueStatusResponse(attentionType, (int) waitingCustomers, averageWaitTime);
     }
@@ -56,14 +54,14 @@ public class QueueService {
      * Q-Insight: Calculates the estimated wait time for a queue.
      * Implements the core logic for RF-003. The formula is: (customers in queue) * (avg service time per type).
      * @param attentionType The queue for which to calculate the wait time.
-     * @param waitingCustomers The number of customers currently in that queue.
+     * @param positionInQueue The position in the queue.
      * @return The estimated wait time in minutes.
      */
-    public long calculateAverageWaitTime(AttentionType attentionType, long waitingCustomers) {
-        if (waitingCustomers == 0) {
+    public long calculateAverageWaitTime(AttentionType attentionType, long positionInQueue) {
+        if (positionInQueue == 0) {
             return 0;
         }
         // This is a simplified estimation. A more complex model could consider the number of available executives.
-        return waitingCustomers * attentionType.getAverageServiceTimeMinutes();
+        return positionInQueue * attentionType.getAverageServiceTimeMinutes();
     }
 }

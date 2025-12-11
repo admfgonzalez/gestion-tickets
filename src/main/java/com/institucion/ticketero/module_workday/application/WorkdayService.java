@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class WorkdayService {
@@ -23,14 +22,17 @@ public class WorkdayService {
     @Transactional
     public Workday openNewWorkday() {
         Optional<Workday> activeWorkday = workdayRepository.findByStatus(WorkdayStatus.OPEN);
-        activeWorkday.ifPresent(Workday::close); // Close any previously active workday
+        activeWorkday.ifPresent(workday -> {
+            workday.close();
+            workdayRepository.save(workday);
+        }); // Close and save any previously active workday
 
         Workday newWorkday = new Workday(LocalDateTime.now(), null, WorkdayStatus.OPEN);
         return workdayRepository.save(newWorkday);
     }
 
     @Transactional
-    public Workday closeWorkday(UUID id) {
+    public Workday closeWorkday(Long id) {
         Workday workday = workdayRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Workday not found with id: " + id));
         workday.close();
@@ -47,7 +49,7 @@ public class WorkdayService {
     }
 
     @Transactional(readOnly = true)
-    public Workday getWorkdayById(UUID id) {
+    public Workday getWorkdayById(Long id) {
         return workdayRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Workday not found with id: " + id));
     }

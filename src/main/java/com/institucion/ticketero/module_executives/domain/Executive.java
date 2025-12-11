@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Q-Insight: Domain Entity for Executive.
@@ -22,8 +21,8 @@ public class Executive {
      * Unique identifier for the executive.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     /**
      * Q-Insight: Executive's Full Name.
@@ -65,11 +64,11 @@ public class Executive {
     private LocalDateTime lastStatusChange;
     
     // Getters and Setters
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

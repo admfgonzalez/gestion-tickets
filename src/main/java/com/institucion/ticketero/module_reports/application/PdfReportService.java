@@ -85,7 +85,7 @@ public class PdfReportService {
         stream.newLineAtOffset(50, y);
         stream.showText(ticket.getTicketNumber() != null ? ticket.getTicketNumber() : "-");
         stream.newLineAtOffset(100, 0);
-        stream.showText(ticket.getCustomerId() != null ? ticket.getCustomerId() : "-");
+        stream.showText(ticket.getNationalId() != null ? ticket.getNationalId() : "-");
         stream.newLineAtOffset(100, 0);
         stream.showText(ticket.getStatus() != null ? ticket.getStatus().name() : "-");
         stream.newLineAtOffset(70, 0);

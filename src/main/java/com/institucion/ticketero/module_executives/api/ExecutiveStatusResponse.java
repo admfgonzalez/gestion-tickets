@@ -4,7 +4,6 @@ import com.institucion.ticketero.module_executives.domain.ExecutiveStatus;
 import com.institucion.ticketero.module_queues.domain.AttentionType;
 
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Q-Insight: API DTO Record for Executive Status.
@@ -19,7 +18,7 @@ import java.util.UUID;
  * @param supportedAttentionTypes The set of attention types this executive can handle.
  */
 public record ExecutiveStatusResponse(
-    UUID id,
+    Long id,
     String fullName,
     String module,
     ExecutiveStatus status,

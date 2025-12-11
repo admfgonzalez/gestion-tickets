@@ -19,7 +19,9 @@ import java.util.UUID;
  * Methods are automatically implemented by Spring based on their names.
  */
 @Repository
-public interface TicketRepository extends JpaRepository<Ticket, UUID> {
+public interface TicketRepository extends JpaRepository<Ticket, Long> {
+
+    Optional<Ticket> findByCodigoReferencia(UUID codigoReferencia);
 
     /**
      * Q-Insight: Counts tickets by status and type.
@@ -49,6 +51,8 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID> {
      */
     long countByStatus(TicketStatus status);
 
+    long countByStatusAndWorkdayId(TicketStatus status, Long workdayId);
+
     /**
      * Q-Insight: Counts tickets created within a specific time window.
      * Used for the "total tickets today" metric on the dashboard (RF-007).
@@ -72,7 +76,7 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID> {
      * @param workdayId The ID of the workday.
      * @return The count of matching tickets.
      */
-    long countByAttentionTypeAndWorkdayId(AttentionType attentionType, UUID workdayId);
+    long countByAttentionTypeAndWorkdayId(AttentionType attentionType, Long workdayId);
 
     /**
      * Q-Insight: Counts tickets by status, attention type, workday, and creation time.
@@ -80,7 +84,7 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID> {
      * It counts how many tickets of the same attention type and workday were created before the given ticket's creation time.
      */
     long countByAttentionTypeAndWorkdayIdAndStatusAndCreatedAtBefore(
-            AttentionType attentionType, UUID workdayId, TicketStatus status, LocalDateTime createdAt);
+            AttentionType attentionType, Long workdayId, TicketStatus status, LocalDateTime createdAt);
 
     /**
      * Q-Insight: Finds tickets that require a pre-arrival notification.
@@ -98,7 +102,7 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID> {
     """, nativeQuery = true)
     List<Ticket> findTicketsAtPositionInQueue(int position);
 
-    List<Ticket> findByExecutiveIdAndStatus(UUID executiveId, TicketStatus status);
+    List<Ticket> findByExecutiveIdAndStatus(Long executiveId, TicketStatus status);
 
     /**
      * Finds all tickets with a given status, ordered by when they were attended.

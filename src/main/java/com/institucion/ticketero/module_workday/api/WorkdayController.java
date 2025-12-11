@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/workdays")
@@ -27,7 +26,7 @@ public class WorkdayController {
     }
 
     @PutMapping("/{id}/close")
-    public ResponseEntity<WorkdayResponse> closeWorkday(@PathVariable UUID id) {
+    public ResponseEntity<WorkdayResponse> closeWorkday(@PathVariable Long id) {
         Workday closedWorkday = workdayService.closeWorkday(id);
         return ResponseEntity.ok(new WorkdayResponse(closedWorkday.getId(), closedWorkday.getStartTime(), closedWorkday.getEndTime(), closedWorkday.getStatus()));
     }
@@ -39,7 +38,7 @@ public class WorkdayController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<WorkdayResponse> getWorkdayById(@PathVariable UUID id) {
+    public ResponseEntity<WorkdayResponse> getWorkdayById(@PathVariable Long id) {
         Workday workday = workdayService.getWorkdayById(id);
         return ResponseEntity.ok(new WorkdayResponse(workday.getId(), workday.getStartTime(), workday.getEndTime(), workday.getStatus()));
     }

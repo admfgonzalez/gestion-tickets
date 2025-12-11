@@ -2,15 +2,14 @@ package com.institucion.ticketero.module_workday.domain;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Table(name = "workdays")
 public class Workday {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "start_time", nullable = false)
     private LocalDateTime startTime;
@@ -31,11 +30,11 @@ public class Workday {
         this.status = status;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

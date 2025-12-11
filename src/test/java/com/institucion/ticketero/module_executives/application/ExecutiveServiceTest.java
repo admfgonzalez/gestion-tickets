@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,11 +35,11 @@ class ExecutiveServiceTest {
     private ExecutiveService executiveService;
 
     private Executive executive;
-    private UUID executiveId;
+    private Long executiveId;
 
     @BeforeEach
     void setUp() {
-        executiveId = UUID.randomUUID();
+        executiveId = 1L;
         executive = new Executive();
         executive.setId(executiveId);
         executive.setFullName("John Doe");
@@ -55,7 +54,7 @@ class ExecutiveServiceTest {
         
         when(executiveRepository.save(any(Executive.class))).thenAnswer(invocation -> {
             Executive exec = invocation.getArgument(0);
-            exec.setId(UUID.randomUUID());
+            exec.setId(2L);
             return exec;
         });
 
@@ -96,7 +95,7 @@ class ExecutiveServiceTest {
 
     @Test
     void getExecutiveById_whenExecutiveDoesNotExist_shouldThrowResourceNotFoundException() {
-        UUID nonExistentId = UUID.randomUUID();
+        Long nonExistentId = 2L;
         when(executiveRepository.findById(nonExistentId)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> executiveService.getExecutiveById(nonExistentId));
@@ -122,7 +121,7 @@ class ExecutiveServiceTest {
 
     @Test
     void updateExecutive_whenExecutiveDoesNotExist_shouldThrowResourceNotFoundException() {
-        UUID nonExistentId = UUID.randomUUID();
+        Long nonExistentId = 2L;
         UpdateExecutiveRequest request = new UpdateExecutiveRequest("Johnathan Doe", "C3", Set.of(AttentionType.EMPRESAS));
         when(executiveRepository.findById(nonExistentId)).thenReturn(Optional.empty());
         
@@ -145,13 +144,13 @@ class ExecutiveServiceTest {
 
     @Test
     void deleteExecutive_whenExecutiveDoesNotExist_shouldThrowResourceNotFoundException() {
-        UUID nonExistentId = UUID.randomUUID();
+        Long nonExistentId = 2L;
         when(executiveRepository.existsById(nonExistentId)).thenReturn(false);
 
         assertThrows(ResourceNotFoundException.class, () -> executiveService.deleteExecutive(nonExistentId));
 
         verify(executiveRepository, times(1)).existsById(nonExistentId);
-        verify(executiveRepository, never()).deleteById(any(UUID.class));
+        verify(executiveRepository, never()).deleteById(any(Long.class));
     }
     
     @Test
@@ -171,7 +170,7 @@ class ExecutiveServiceTest {
 
     @Test
     void updateSupportedAttentionTypes_whenExecutiveDoesNotExist_shouldThrowResourceNotFoundException() {
-        UUID nonExistentId = UUID.randomUUID();
+        Long nonExistentId = 2L;
         List<AttentionType> newTypes = List.of(AttentionType.PERSONAL_BANKER);
         when(executiveRepository.findById(nonExistentId)).thenReturn(Optional.empty());
 

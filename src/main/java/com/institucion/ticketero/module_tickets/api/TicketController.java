@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 /**
  * Q-Insight: API Controller for Tickets.
  * This controller exposes REST endpoints for all ticket-related operations.
@@ -42,9 +44,15 @@ public class TicketController {
      * @param ticketNumber The ticket number from the URL path.
      * @return A ResponseEntity with the ticket's status details.
      */
-    @GetMapping("/{ticketNumber}/status")
+    @GetMapping("/{ticketNumber}/position")
     public ResponseEntity<TicketStatusResponse> getTicketStatus(@PathVariable String ticketNumber) {
         TicketStatusResponse response = ticketService.getTicketStatus(ticketNumber);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{codigoReferencia}")
+    public ResponseEntity<TicketStatusResponse> getTicketStatusByCodigoReferencia(@PathVariable UUID codigoReferencia) {
+        TicketStatusResponse response = ticketService.getTicketStatusByCodigoReferencia(codigoReferencia);
         return ResponseEntity.ok(response);
     }
 }

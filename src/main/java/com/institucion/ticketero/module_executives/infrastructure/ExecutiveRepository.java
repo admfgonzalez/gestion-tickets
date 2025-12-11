@@ -8,14 +8,13 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Q-Insight: Infrastructure Repository for Executives.
  * This interface provides the data access layer for the Executive entity using Spring Data JPA.
  */
 @Repository
-public interface ExecutiveRepository extends JpaRepository<Executive, UUID> {
+public interface ExecutiveRepository extends JpaRepository<Executive, Long> {
 
     /**
      * Q-Insight: Finds an available executive for a specific queue type.
